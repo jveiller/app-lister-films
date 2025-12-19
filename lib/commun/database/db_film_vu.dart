@@ -1,0 +1,168 @@
+import 'package:culture_app1/commun/classes/class_films_vu.dart';
+import 'package:intl/intl.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+
+//Création de la classe qui va manipuler la base de donnée
+class DbFilmsVu {
+  static Database? _database;
+
+  //Récupérer la base de données
+  static Future<Database> getDatabase() async {
+    if (_database != null) return _database!;
+    _database = await _initDatabase();
+    return _database!;
+  }
+
+  //Initialiser la base de données
+  static Future<Database> _initDatabase() async {
+    //Création de la base de donnée activite.db ou importation de celle-ci si elle existe déjà
+    String path = join(await getDatabasesPath(), 'filmsVu2.db');
+    return await openDatabase(
+      path,
+      version: 3,
+      //Création de la table si nouvelle base de donnée
+      onCreate: (db, version) {
+        return db.execute(
+          'CREATE TABLE filmsVu2 (id INTEGER PRIMARY KEY, titre TEXT, duree INTEGER, note DEC, genre TEXT, plateforme TEXT, annee INTEGER, description TEXT, acteurs TEXT, citations TEXT, realisateur TEXT, cinema BOOLEAN, contexte TEXT, date TEXT)',
+        );
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 3) {
+          await db.execute("ALTER TABLE filmsVu2 ADD COLUMN cinema BOOLEAN");
+          await db.execute("ALTER TABLE filmsVu2 ADD COLUMN contexte TEXT");
+          await db.execute("ALTER TABLE filmsVu2 ADD COLUMN date TEXT");
+        }
+      },
+    );
+  }
+
+  //INSERER une donnée dans la BDD
+  static Future<int> insert(FilmsVu film) async {
+    final db = await getDatabase();
+    String? acteurs;
+    String? citations;
+    if (film.acteurs != null) {
+      acteurs = film.acteurs!.join(',');
+    } else {
+      acteurs = null;
+    }
+    if (film.citations != null) {
+      citations = film.citations!.join(',');
+    } else {
+      citations = null;
+    }
+    return await db.insert('filmsVu2', {
+      'titre': film.titre,
+      'duree': film.duree,
+      'note': film.note,
+      'genre': film.genre,
+      'plateforme': film.plateforme,
+      'annee': film.annee,
+      'description': film.description,
+      'acteurs': acteurs,
+      'citations': citations,
+      'realisateur': film.realisateur,
+      'cinema': film.cinema,
+      'contexte': film.contexte,
+      'date': film.date == null
+          ? null
+          : DateFormat("dd/MM/yyyy").format(film.date!),
+    });
+  }
+
+  //MODIFIER une donnée dans la BDD
+  static Future<int> update(FilmsVu fv) async {
+    final db = await getDatabase();
+    String? acteurs;
+    String? citations;
+    if (fv.acteurs != null) {
+      acteurs = fv.acteurs!.join(',');
+    } else {
+      acteurs = null;
+    }
+    if (fv.citations != null) {
+      citations = fv.citations!.join(',');
+    } else {
+      citations = null;
+    }
+    return await db.update(
+      'filmsVu2',
+      {
+        'titre': fv.titre,
+        'duree': fv.duree,
+        'note': fv.note,
+        'genre': fv.genre,
+        'plateforme': fv.plateforme,
+        'annee': fv.annee,
+        'description': fv.description,
+        'acteurs': acteurs,
+        'citations': citations,
+        'realisateur': fv.realisateur,
+        'cinema': fv.cinema,
+        'contexte': fv.contexte,
+        'date': fv.date == null
+            ? null
+            : DateFormat("dd/MM/yyyy").format(fv.date!),
+      },
+      where: 'id=?',
+      whereArgs: [fv.id],
+    );
+  }
+
+  //SUPPRIMER une donnée dans la BDD
+  static Future<int> delete(int id) async {
+    final db = await getDatabase();
+    return await db.delete('filmsVu2', where: 'id=?', whereArgs: [id]);
+  }
+
+  //LIRE les données de la BDD
+  static Future<List<FilmsVu>> getList() async {
+    final db = await getDatabase();
+    var listeData = await db.query('filmsVu2');
+    List<FilmsVu> listeFilm = [];
+    for (var film in listeData) {
+      listeFilm.add(
+        FilmsVu(
+          id: film['id'] as int,
+          titre: film['titre'] as String,
+          duree: film['duree'] == null ? null : film['duree'] as int,
+          note: film['note'] == null
+              ? null
+              : film['note'] is int
+              ? (film['note'] as int).toDouble()
+              : film['note'] as double,
+          genre: film['genre'] == null ? null : film['genre'] as String,
+          plateforme: film['plateforme'] == null
+              ? null
+              : film['plateforme'] as String,
+          annee: film['annee'] == null ? null : film['annee'] as int,
+          description: film['description'] == null
+              ? null
+              : film['description'] as String,
+          acteurs: film['acteurs'] == null
+              ? null
+              : (film['acteurs'] as String).split(','),
+          citations: film['citations'] == null
+              ? null
+              : (film['citations'] as String).split(','),
+          realisateur: film['realisateur'] == null
+              ? null
+              : film['realisateur'] as String,
+          cinema: film['cinema'] == null
+              ? null
+              : film['cinema'] == 1
+              ? true
+              : false,
+          contexte: film['contexte'] == null
+              ? null
+              : film['contexte'] as String,
+          date: film['date'] == null
+              ? null
+              : DateFormat("dd/MM/yyyy").parse(film['date'] as String),
+        ),
+      );
+    }
+    return listeFilm;
+  }
+}
