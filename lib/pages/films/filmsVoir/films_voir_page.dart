@@ -116,6 +116,15 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
                 ) ||
                 (fv.genre ?? '').toLowerCase().contains(
                   _searchController.text.toLowerCase(),
+                ) ||
+                (fv.realisateur ?? '').toLowerCase().contains(
+                  _searchController.text.toLowerCase(),
+                ) ||
+                ((fv.acteurs ?? []).join(',')).toLowerCase().contains(
+                  _searchController.text.toLowerCase(),
+                ) ||
+                (fv.plateforme ?? '').toLowerCase().contains(
+                  _searchController.text.toLowerCase(),
                 )) {
               listeModif.add(fv);
             }
@@ -184,24 +193,6 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
   void triAjoutFV() {
     setState(() {
       _filmsVoir.sort((a, b) => (b.id).compareTo(a.id));
-    });
-  }
-
-  void modifAfficheListe(String textVal) {
-    _fetchFVoir();
-    List<FilmsVoir> listeModif = [];
-    if (textVal != '') {
-      for (FilmsVoir fv in _filmsVoir) {
-        if (fv.titre.toLowerCase().contains(textVal.toLowerCase()) ||
-            (fv.genre ?? '').toLowerCase().contains(textVal.toLowerCase())) {
-          listeModif.add(fv);
-        }
-      }
-    } else {
-      listeModif = _filmsVoir;
-    }
-    setState(() {
-      _afficheFilmVoir = listeModif;
     });
   }
 

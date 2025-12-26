@@ -50,7 +50,7 @@ class _FilmVoirCardState extends State<FilmVoirCard> {
           borderRadius: BorderRadius.circular(15.0),
         ),
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 20),
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
           child: Row(
             children: [
               Expanded(
@@ -61,6 +61,7 @@ class _FilmVoirCardState extends State<FilmVoirCard> {
                       texte: widget.fv.titre,
                       size: 20,
                       weight: FontWeight.bold,
+                      alignment: TextAlign.start,
                     ),
                     if (widget.fv.duree != null) ...[
                       if ((widget.fv.duree! % 60) == 0 &&
@@ -91,10 +92,13 @@ class _FilmVoirCardState extends State<FilmVoirCard> {
                   ],
                 ),
               ),
-              ComposantTexte(
-                texte: widget.fv.note != null
-                    ? widget.fv.note.toString()
-                    : 'Pas de note',
+              Container(
+                margin: const EdgeInsets.only(left: 5),
+                child: ComposantTexte(
+                  texte: widget.fv.note != null
+                      ? widget.fv.note.toString()
+                      : 'Pas de note',
+                ),
               ),
             ],
           ),
