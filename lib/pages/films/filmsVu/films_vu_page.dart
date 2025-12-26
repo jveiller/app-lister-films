@@ -21,6 +21,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
   List<String> _genres = [];
   bool _initialise = false;
   final _searchController = TextEditingController();
+  String tri = 'date';
   // Une fonction avec async est une fonction asynchrone, cela veut dire que le programme ne va pas attendre qu'elle est fini de s'executer pour
   // passer à la ligne suivante, elle peut donc s'executer en même temps que d'autres lignes, on met await devant les appel des fonctions asynchrones,
   // Une fonction qui retourne un élément de manière asynchrone est de type Future<>
@@ -103,6 +104,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
       fv.setDate(date);
       DbFilmsVu.update(fv);
     });
+    _fetchFilmVu();
   }
 
   void _deleteFilmVu(int id) async {
@@ -148,18 +150,23 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
         } else {
           listeModif = _filmsVu;
         }
-        setState(() {
-          _afficheFilmVu = listeModif;
-        });
+        if (tri == 'date') {
+          triAjout();
+        } else if (tri == 'duree') {
+          triDuree();
+        } else if (tri == 'note') {
+          triNote();
+        }
+        _afficheFilmVu = listeModif;
       }
     });
   }
 
   Future<void> addGenre(String g) async {
-    if (!_genres.contains(g)) {
+    if (!_genres.contains(g) && g != '') {
       var box = await Hive.openBox('film');
       setState(() {
-        _genres.add(g);
+        _genres.insert(0, g);
       });
       await box.put('genres', _genres);
       await loadGenre();
@@ -185,13 +192,14 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
     var box = await Hive.openBox('film');
     List<String>? g = box.get('genres');
     setState(() {
-      _genres = g ?? ['Comedie'];
+      _genres = g ?? ['Comédie'];
     });
     await box.close();
   }
 
   void triDuree() {
     setState(() {
+      tri = 'duree';
       _filmsVu.sort(
         (a, b) => (a.duree ?? double.maxFinite.toInt()).compareTo(
           b.duree ?? double.maxFinite.toInt(),
@@ -202,12 +210,14 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
 
   void triNote() {
     setState(() {
+      tri = 'note';
       _filmsVu.sort((a, b) => (b.note ?? 0).compareTo(a.note ?? 0));
     });
   }
 
   void triAjout() {
     setState(() {
+      tri = 'date';
       _filmsVu.sort((a, b) => (b.id).compareTo(a.id));
     });
   }

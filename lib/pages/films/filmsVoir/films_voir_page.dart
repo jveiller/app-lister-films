@@ -15,15 +15,12 @@ class FilmsVoirPage extends StatefulWidget {
 }
 
 class _FilmsVoirPageState extends State<FilmsVoirPage> {
-  List<FilmsVoir> _filmsVoir =
-      []; //activites = Liste d'une Map avec un String en clé et une valeur dont le type peut changer, initialisé vide
+  List<FilmsVoir> _filmsVoir = [];
   List<FilmsVoir> _afficheFilmVoir = [];
   List<String> _genres = [];
   bool _initialise = false;
   final _searchController = TextEditingController();
-  // Une fonction avec async est une fonction asynchrone, cela veut dire que le programme ne va pas attendre qu'elle est fini de s'executer pour
-  // passer à la ligne suivante, elle peut donc s'executer en même temps que d'autres lignes, on met await devant les appel des fonctions asynchrones,
-  // Une fonction qui retourne un élément de manière asynchrone est de type Future<>
+  String tri = 'date';
 
   void _addFilmVoir({
     required String titre,
@@ -51,10 +48,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
       realisateur: realisateur,
     );
     //Fonction pour ajouter une élément dans la base de données
-    //Si l'élément renvoyé par le champ nom du form n'est pas null
-    await DbFilmsVoir.insert(
-      newFilm,
-    ); //Appel de la fonction insert de la class DbHelper avec actNameController mis en format text et selectedActType en paramètres
+    await DbFilmsVoir.insert(newFilm);
     _fetchFVoir();
     id += 1;
     await box.put('id', id);
@@ -87,6 +81,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
       fv.setRealisateur(realisateur);
       DbFilmsVoir.update(fv);
     });
+    _fetchFVoir();
   }
 
   void _deleteFVoir(int id) async {
@@ -103,7 +98,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
       // Mise à jour de l'état
       _filmsVoir = List.from(
         data.reversed,
-      ); // La variable activités prend les valeurs de data
+      ); // La variable _filmsVoir prend les valeurs de data
       if (!_initialise) {
         _afficheFilmVoir = _filmsVoir;
         _initialise = true;
@@ -132,6 +127,13 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
         } else {
           listeModif = _filmsVoir;
         }
+        if (tri == 'date') {
+          triAjoutFV();
+        } else if (tri == 'duree') {
+          triDureeFV();
+        } else if (tri == 'note') {
+          triNoteFV();
+        }
         setState(() {
           _afficheFilmVoir = listeModif;
         });
@@ -140,10 +142,10 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
   }
 
   Future<void> addGenre(String g) async {
-    if (!_genres.contains(g)) {
+    if (!_genres.contains(g) && g != '') {
       var box = await Hive.openBox('film');
       setState(() {
-        _genres.add(g);
+        _genres.insert(0, g);
       });
       await box.put('genres', _genres);
       await loadGenre();
@@ -169,7 +171,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
     var box = await Hive.openBox('film');
     List<String>? g = box.get('genres');
     setState(() {
-      _genres = g ?? ['Comedie'];
+      _genres = g ?? ['Comédie'];
     });
     await box.close();
   }
@@ -202,7 +204,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
 
   @override //à mettre avant les méthodes utilisant des instances
   void initState() {
-    //Donne les valeurs initiales de la BdD à activites
+    //Donne les valeurs initiales de la BdD à _filmsVoir et genre
     super.initState();
     _fetchFVoir();
     loadGenre();

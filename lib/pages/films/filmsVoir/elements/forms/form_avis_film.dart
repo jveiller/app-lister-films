@@ -245,7 +245,7 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
                   Container(
                     margin: EdgeInsets.all(5),
                     child: ChampListe(
-                      txt: 'Acteur·rices principaux',
+                      txt: 'Acteurs/Actrices',
                       liste: listeActeurs,
                       addListeFonction: addActeur,
                       supprListeFonction: supprActeur,
@@ -255,7 +255,7 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
                   Container(
                     margin: EdgeInsets.all(5),
                     child: ChampTexte(
-                      txt: 'Réalisateur·rice',
+                      txt: 'Réalisateur/Réalisatrice',
                       champController: realisateurController,
                     ),
                   ),

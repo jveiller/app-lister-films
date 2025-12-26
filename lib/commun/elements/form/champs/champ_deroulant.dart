@@ -51,7 +51,6 @@ class _ChampDeroulantState extends State<ChampDeroulant> {
     super.initState();
     formController = widget.initFormController.toString();
     supprController = widget.liste.first.toString();
-    print(widget.liste);
   }
 
   @override
@@ -60,204 +59,212 @@ class _ChampDeroulantState extends State<ChampDeroulant> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ComposantTexte(texte: widget.txt, weight: FontWeight.bold),
-        Row(
-          children: [
-            Expanded(
-              child: DropdownButtonFormField(
-                items: [
-                  for (Object g in widget.liste)
-                    DropdownMenuItem(
-                      value: g.toString(),
-                      child: ComposantTexte(texte: g.toString()),
-                    ),
-                  if (widget.addSuppr)
-                    DropdownMenuItem(
-                      value: 'ajouter',
-                      child: ComposantTexte(
+        DropdownButtonFormField(
+          items: [
+            if (!widget.necessaire)
+              DropdownMenuItem(
+                value: '',
+                child: ComposantTexte(texte: 'Je ne sais pas'),
+              ),
+            for (Object g in widget.liste)
+              DropdownMenuItem(
+                value: g.toString(),
+                child: ComposantTexte(texte: g.toString()),
+              ),
+          ],
+          value: formController,
+          decoration: InputDecoration(
+            fillColor: Colors.white,
+            filled: true,
+            border: OutlineInputBorder(),
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.black, width: 2),
+            ),
+          ),
+          onChanged: (value) {
+            widget.changeGenre(value);
+            setState(() {
+              formController = value!;
+              if (value != '') {
+                widget.liste.remove(value);
+                widget.liste.insert(0, value);
+              }
+            });
+          },
+        ),
+        if (widget.addSuppr) ...[
+          Row(
+            children: [
+              TextButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      backgroundColor: Colors.white,
+                      title: ComposantTexte(
                         texte: 'Ajouter ${widget.txt.toLowerCase()}',
                       ),
-                    ),
-                  if (!widget.necessaire)
-                    DropdownMenuItem(
-                      value: '',
-                      child: ComposantTexte(texte: 'Je ne sais pas'),
-                    ),
-                ],
-                value: formController,
-                decoration: InputDecoration(
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: OutlineInputBorder(),
-                  labelStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                onChanged: (value) {
-                  if (value == 'ajouter') {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        backgroundColor: Colors.white,
-                        title: ComposantTexte(
-                          texte: 'Ajouter ${widget.txt.toLowerCase()}',
-                        ),
-                        content: Form(
-                          key: keyAdd,
-                          child: Container(
-                            margin: EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 5,
-                            ),
-                            child: TextFormField(
-                              cursorColor: Colors.black,
-                              textCapitalization: TextCapitalization.sentences,
-                              maxLength: 18,
-                              decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                filled: true,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.black,
-                                    width: 2,
-                                  ),
+                      content: Form(
+                        key: keyAdd,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 5,
+                          ),
+                          child: TextFormField(
+                            cursorColor: Colors.black,
+                            textCapitalization: TextCapitalization.sentences,
+                            maxLength: 18,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 2,
                                 ),
-                                labelText: widget.txtFeminin == false
-                                    ? 'Nouveau ${widget.txt.toLowerCase()}'
-                                    : 'Nouvelle ${widget.txt.toLowerCase()}',
-                                hintText: widget.txtFeminin == false
-                                    ? 'Entrez le nouveau ${widget.txt.toLowerCase()}'
-                                    : 'Entrez la nouvelle ${widget.txt.toLowerCase()}',
-                                border: const OutlineInputBorder(),
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Tu dois compléter ce texte';
-                                }
-                                return null;
-                              },
-                              controller: widget.addController,
+                              labelText: widget.txtFeminin == false
+                                  ? 'Nouveau ${widget.txt.toLowerCase()}'
+                                  : 'Nouvelle ${widget.txt.toLowerCase()}',
+                              labelStyle: TextStyle(color: Colors.black),
+                              hintText: widget.txtFeminin == false
+                                  ? 'Entrez le nouveau ${widget.txt.toLowerCase()}'
+                                  : 'Entrez la nouvelle ${widget.txt.toLowerCase()}',
+                              border: const OutlineInputBorder(),
                             ),
-                          ),
-                        ),
-                        actions: [
-                          BoutonAnnuler(),
-                          TextButton(
-                            onPressed: () async {
-                              if (widget.addController!.text.isNotEmpty &&
-                                  keyAdd.currentState!.validate()) {
-                                Object nouveauElt = widget.addController!.text;
-
-                                await widget.addFonction!(nouveauElt);
-                                widget.addController!.clear();
-                                setState(() {
-                                  formController = nouveauElt.toString();
-                                });
-                                widget.changeGenre(nouveauElt.toString());
-                                Navigator.pop(context);
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Tu dois compléter ce texte';
                               }
+                              return null;
                             },
-                            child: ComposantTexte(texte: 'Valider'),
+                            controller: widget.addController,
                           ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    widget.changeGenre(value);
-                    setState(() {
-                      formController = value!;
-                    });
-                  }
-                },
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    backgroundColor: Colors.white,
-                    title: ComposantTexte(
-                      texte: 'Supprimer ${widget.txt.toLowerCase()}',
-                    ),
-                    content: Form(
-                      key: keySuppr,
-                      child: Container(
-                        margin: EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 5,
-                        ),
-                        child: DropdownButtonFormField(
-                          validator: (value) {
-                            if (widget.liste.length < 2) {
-                              return widget.txtFeminin == false
-                                  ? 'Tu dois garder un ${widget.txt.toLowerCase()} dans la liste'
-                                  : 'Tu dois garder une ${widget.txt.toLowerCase()} dans la liste';
-                            }
-                            return null;
-                          },
-                          items: [
-                            for (Object g in widget.liste)
-                              DropdownMenuItem(
-                                value: g.toString(),
-                                child: ComposantTexte(texte: g.toString()),
-                              ),
-                          ],
-                          value: supprController,
-                          decoration: InputDecoration(
-                            fillColor: Colors.white,
-                            filled: true,
-                            border: OutlineInputBorder(),
-                            labelText: widget.txt,
-                            labelStyle: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              supprController = value!;
-                            });
-                          },
                         ),
                       ),
-                    ),
-                    actions: [
-                      BoutonAnnuler(),
-                      TextButton(
-                        onPressed: () async {
-                          if (keySuppr.currentState!.validate()) {
-                            await widget.supprFonction!(supprController);
-                            setState(() {
-                              supprController = widget.liste.first.toString();
-                              if (!widget.liste.contains(formController)) {
-                                formController = widget.liste.first.toString();
-                                widget.changeGenre(
-                                  widget.liste.first.toString(),
-                                );
-                              }
-                            });
+                      actions: [
+                        BoutonAnnuler(),
+                        TextButton(
+                          onPressed: () async {
+                            if (widget.addController!.text.isNotEmpty &&
+                                keyAdd.currentState!.validate()) {
+                              Object nouveauElt = widget.addController!.text;
 
-                            Navigator.pop(
-                              // ignore: use_build_context_synchronously
-                              context,
-                            );
-                          }
-                        },
-                        child: ComposantTexte(texte: 'Valider'),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              child: ComposantTexte(
-                texte: 'Supprimer',
-                color: Colors.red[900],
-                size: 14,
+                              await widget.addFonction!(nouveauElt);
+                              widget.addController!.clear();
+                              setState(() {
+                                formController = nouveauElt.toString();
+                              });
+                              widget.changeGenre(nouveauElt.toString());
+                              Navigator.pop(context);
+                            }
+                          },
+                          child: ComposantTexte(texte: 'Valider'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                child: ComposantTexte(texte: 'Ajouter', size: 14),
               ),
-            ),
-          ],
-        ),
+              TextButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      backgroundColor: Colors.white,
+                      title: ComposantTexte(
+                        texte: 'Supprimer ${widget.txt.toLowerCase()}',
+                      ),
+                      content: Form(
+                        key: keySuppr,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 5,
+                          ),
+                          child: DropdownButtonFormField(
+                            validator: (value) {
+                              if (widget.liste.length < 2) {
+                                return widget.txtFeminin == false
+                                    ? 'Tu dois garder un ${widget.txt.toLowerCase()} dans la liste'
+                                    : 'Tu dois garder une ${widget.txt.toLowerCase()} dans la liste';
+                              }
+                              return null;
+                            },
+                            items: [
+                              for (Object g in widget.liste)
+                                DropdownMenuItem(
+                                  value: g.toString(),
+                                  child: ComposantTexte(texte: g.toString()),
+                                ),
+                            ],
+                            value: supprController,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                              ),
+                              border: OutlineInputBorder(),
+                              labelText: widget.txt,
+                              labelStyle: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.black,
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                supprController = value!;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      actions: [
+                        BoutonAnnuler(),
+                        TextButton(
+                          onPressed: () async {
+                            if (keySuppr.currentState!.validate()) {
+                              await widget.supprFonction!(supprController);
+                              setState(() {
+                                supprController = widget.liste.first.toString();
+                                if (!widget.liste.contains(formController)) {
+                                  formController = widget.liste.first
+                                      .toString();
+                                  widget.changeGenre(
+                                    widget.liste.first.toString(),
+                                  );
+                                }
+                              });
+
+                              Navigator.pop(
+                                // ignore: use_build_context_synchronously
+                                context,
+                              );
+                            }
+                          },
+                          child: ComposantTexte(texte: 'Valider'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                child: ComposantTexte(
+                  texte: 'Supprimer',
+                  color: Colors.red[900],
+                  size: 14,
+                ),
+              ),
+            ],
+          ),
+        ],
       ],
     );
   }

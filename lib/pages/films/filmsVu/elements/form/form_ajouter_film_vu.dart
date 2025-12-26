@@ -180,17 +180,17 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
                   Container(
                     margin: EdgeInsets.all(5),
                     child: ChampListe(
-                      txt: 'Acteurices principaux',
+                      txt: 'Acteurs/Actrices',
                       liste: listeActeurs,
                       addListeFonction: addActeur,
                       supprListeFonction: supprActeur,
-                      apresAjoutez: 'un·e acteurice',
+                      apresAjoutez: 'un·e acteur·ice',
                     ),
                   ),
                   Container(
                     margin: EdgeInsets.all(5),
                     child: ChampTexte(
-                      txt: 'Réalisateur',
+                      txt: 'Réalisateur/Réalisatrice',
                       champController: realisateurController,
                     ),
                   ),
