@@ -33,16 +33,22 @@ class DbFilmsVoir {
   static Future<int> insert(FilmsVoir film) async {
     final db = await getDatabase();
     String? acteurs;
+    String? genres;
     if (film.acteurs != null) {
       acteurs = film.acteurs!.join(',');
     } else {
       acteurs = null;
     }
+    if (film.genre != null) {
+      genres = film.genre!.join(',');
+    } else {
+      genres = null;
+    }
     return await db.insert('filmsVoir3', {
       'titre': film.titre,
       'duree': film.duree,
       'note': film.note,
-      'genre': film.genre,
+      'genre': genres,
       'plateforme': film.plateforme,
       'annee': film.annee,
       'description': film.description,
@@ -55,10 +61,16 @@ class DbFilmsVoir {
   static Future<int> update(FilmsVoir fv) async {
     final db = await getDatabase();
     String? acteurs;
+    String? genres;
     if (fv.acteurs != null) {
       acteurs = fv.acteurs!.join(',');
     } else {
       acteurs = null;
+    }
+    if (fv.genre != null) {
+      genres = fv.genre!.join(',');
+    } else {
+      genres = null;
     }
     return await db.update(
       'filmsVoir3',
@@ -66,7 +78,7 @@ class DbFilmsVoir {
         'titre': fv.titre,
         'duree': fv.duree,
         'note': fv.note,
-        'genre': fv.genre,
+        'genre': genres,
         'plateforme': fv.plateforme,
         'annee': fv.annee,
         'description': fv.description,
@@ -100,7 +112,9 @@ class DbFilmsVoir {
               : film['note'] is int
               ? (film['note'] as int).toDouble()
               : film['note'] as double,
-          genre: film['genre'] == null ? null : film['genre'] as String,
+          genre: film['genre'] == null
+              ? null
+              : (film['genre'] as String).split(','),
           plateforme: film['plateforme'] == null
               ? null
               : film['plateforme'] as String,

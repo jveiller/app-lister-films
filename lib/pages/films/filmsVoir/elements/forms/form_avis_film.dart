@@ -4,9 +4,10 @@ import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/commun/couleur.dart';
 import 'package:culture_app1/commun/database/db_film_vu.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_date.dart';
-import 'package:culture_app1/commun/elements/form/champs/champ_deroulant.dart';
+//import 'package:culture_app1/commun/elements/form/champs/champ_deroulant.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_duree.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_liste.dart';
+import 'package:culture_app1/commun/elements/form/champs/champ_liste_deroulant.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_nombre.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_note.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_texte.dart';
@@ -35,7 +36,8 @@ class FormAvisFilm extends StatefulWidget {
 
 class _FormAvisFilmState extends State<FormAvisFilm> {
   late TextEditingController titreController;
-  late String genreController;
+  //late String genreController;
+  late List<String> genres;
   late TextEditingController heureController;
   late TextEditingController minuteController;
   final noteController = TextEditingController();
@@ -51,16 +53,16 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
   late String supprGenreController;
   late List<String> listeActeurs;
   final List<String> listeCitations = [];
-  final addGenreController = TextEditingController();
+  //final addGenreController = TextEditingController();
   final keyForm = GlobalKey<FormState>();
-  final keyAddForm = GlobalKey<FormState>();
-  final keySupprForm = GlobalKey<FormState>();
+  //final keyAddForm = GlobalKey<FormState>();
+  //final keySupprForm = GlobalKey<FormState>();
 
   void _convertFilm({
     required String titre,
     int? annee,
     int? duree,
-    String? genre,
+    List<String>? genre,
     String? plateforme,
     String? description,
     double? note,
@@ -98,16 +100,32 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
     await box.close();
   }
 
-  void changeGenre(String g) {
+  /*void changeGenre(String g) {
     setState(() {
       genreController = g;
+    });
+  }*/
+
+  void addGenre(String g) {
+    if (!genres.contains(g)) {
+      setState(() {
+        genres.add(g);
+      });
+    }
+  }
+
+  void supprGenre(String g) {
+    setState(() {
+      genres.remove(g);
     });
   }
 
   void addActeur(String a) {
-    setState(() {
-      listeActeurs.add(a);
-    });
+    if (!listeActeurs.contains(a)) {
+      setState(() {
+        listeActeurs.add(a);
+      });
+    }
   }
 
   void supprActeur(String a) {
@@ -180,8 +198,8 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
     anneeController = TextEditingController(text: widget.fv.annee?.toString());
     descriptionController = TextEditingController(text: widget.fv.description);
     realisateurController = TextEditingController(text: widget.fv.realisateur);
-    genreController = widget.fv.genre ?? '';
-    supprGenreController = widget.listeGenres.first;
+    genres = widget.fv.genre ?? [];
+    //supprGenreController = widget.listeGenres.first;
     listeActeurs = widget.fv.acteurs ?? [];
   }
 
@@ -207,7 +225,7 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
                       necessaire: true,
                     ),
                   ),
-                  Container(
+                  /*Container(
                     margin: EdgeInsets.all(5),
                     child: ChampDeroulant(
                       txt: 'Genre',
@@ -217,6 +235,22 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
                       addController: addGenreController,
                       addFonction: widget.addGenreFonction,
                       supprFonction: widget.supprGenreFonction,
+                    ),
+                  ),*/
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ChampListeDeroulant(
+                      txt: 'Genre',
+                      //initFormController: genreController,
+                      liste: genres,
+                      listeDeroulant: widget.listeGenres,
+                      //changeGenre: changeGenre,
+                      //addController: addGenreController,
+                      addDeroulantFonction: widget.addGenreFonction,
+                      supprDeroulantFonction: widget.supprGenreFonction,
+                      addListeFonction: addGenre,
+                      supprListeFonction: supprGenre,
+                      apresAjoutez: 'un genre',
                     ),
                   ),
                   Container(
@@ -377,7 +411,7 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
                       titreController.text.isNotEmpty) {
                     _convertFilm(
                       titre: titreController.text,
-                      genre: genreController == '' ? null : genreController,
+                      genre: genres.isEmpty ? null : genres,
                       duree:
                           (heureController.text != '') ||
                               (minuteController.text != '')

@@ -26,7 +26,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
     required String titre,
     int? annee,
     int? duree,
-    String? genre,
+    List<String>? genre,
     String? plateforme,
     String? description,
     double? note,
@@ -58,7 +58,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
   void modifFVoir({
     required FilmsVoir fv,
     String? titre,
-    String? genre,
+    List<String>? genre,
     int? annee,
     int? duree,
     double? note,
@@ -109,7 +109,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
             if (fv.titre.toLowerCase().contains(
                   _searchController.text.toLowerCase(),
                 ) ||
-                (fv.genre ?? '').toLowerCase().contains(
+                ((fv.genre ?? []).join(',')).toLowerCase().contains(
                   _searchController.text.toLowerCase(),
                 ) ||
                 (fv.realisateur ?? '').toLowerCase().contains(

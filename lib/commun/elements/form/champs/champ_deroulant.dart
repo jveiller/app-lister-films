@@ -51,6 +51,10 @@ class _ChampDeroulantState extends State<ChampDeroulant> {
     super.initState();
     formController = widget.initFormController.toString();
     supprController = widget.liste.first.toString();
+    if (widget.liste.contains(widget.initFormController.toString())) {
+      widget.liste.remove(widget.initFormController.toString());
+      widget.liste.insert(0, widget.initFormController.toString());
+    }
   }
 
   @override

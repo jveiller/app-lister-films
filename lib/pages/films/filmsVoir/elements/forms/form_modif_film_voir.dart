@@ -1,9 +1,10 @@
 import 'package:culture_app1/commun/classes/class_films_voir.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/commun/couleur.dart';
-import 'package:culture_app1/commun/elements/form/champs/champ_deroulant.dart';
+//import 'package:culture_app1/commun/elements/form/champs/champ_deroulant.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_duree.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_liste.dart';
+import 'package:culture_app1/commun/elements/form/champs/champ_liste_deroulant.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_nombre.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_note.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_texte.dart';
@@ -33,7 +34,8 @@ class FormModifFilmVoir extends StatefulWidget {
 
 class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
   late TextEditingController titreController;
-  late String genreController;
+  //late String genreController;
+  late List<String> genres;
   late TextEditingController heureController;
   late TextEditingController minuteController;
   late TextEditingController noteController;
@@ -48,16 +50,32 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
   final keyAddForm = GlobalKey<FormState>();
   final keySupprForm = GlobalKey<FormState>();
 
-  void changeGenre(String g) {
+  /*void changeGenre(String g) {
     setState(() {
       genreController = g;
+    });
+  }*/
+
+  void addGenre(String g) {
+    if (!genres.contains(g)) {
+      setState(() {
+        genres.add(g);
+      });
+    }
+  }
+
+  void supprGenre(String g) {
+    setState(() {
+      genres.remove(g);
     });
   }
 
   void addActeur(String a) {
-    setState(() {
-      listeActeurs.add(a);
-    });
+    if (!listeActeurs.contains(a)) {
+      setState(() {
+        listeActeurs.add(a);
+      });
+    }
   }
 
   void supprActeur(String a) {
@@ -85,8 +103,8 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
     anneeController = TextEditingController(text: widget.fv.annee?.toString());
     descriptionController = TextEditingController(text: widget.fv.description);
     realisateurController = TextEditingController(text: widget.fv.realisateur);
-    genreController = widget.fv.genre ?? '';
-    supprGenreController = widget.listeGenres.first;
+    genres = widget.fv.genre ?? [];
+    //supprGenreController = widget.listeGenres.first;
     listeActeurs = widget.fv.acteurs ?? [];
   }
 
@@ -112,7 +130,7 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
                       necessaire: true,
                     ),
                   ),
-                  Container(
+                  /*Container(
                     margin: EdgeInsets.all(5),
                     child: ChampDeroulant(
                       txt: 'Genre',
@@ -122,6 +140,22 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
                       addController: addGenreController,
                       addFonction: widget.addGenreFonction,
                       supprFonction: widget.supprGenreFonction,
+                    ),
+                  ),*/
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ChampListeDeroulant(
+                      txt: 'Genre',
+                      //initFormController: genreController,
+                      liste: genres,
+                      listeDeroulant: widget.listeGenres,
+                      //changeGenre: changeGenre,
+                      //addController: addGenreController,
+                      addDeroulantFonction: widget.addGenreFonction,
+                      supprDeroulantFonction: widget.supprGenreFonction,
+                      addListeFonction: addGenre,
+                      supprListeFonction: supprGenre,
+                      apresAjoutez: 'un genre',
                     ),
                   ),
                   Container(
@@ -198,7 +232,7 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
                     widget.modifFonction(
                       fv: widget.fv,
                       titre: titreController.text,
-                      genre: genreController == '' ? null : genreController,
+                      genre: genres.isEmpty ? null : genres,
                       duree:
                           (heureController.text != '') ||
                               (minuteController.text != '')

@@ -85,7 +85,10 @@ class _FilmVoirCardState extends State<FilmVoirCard> {
                       else
                         ComposantTexte(texte: '${widget.fv.duree! % 60} min'),
                     ] else if (widget.fv.genre != null) ...[
-                      ComposantTexte(texte: widget.fv.genre!),
+                      ComposantTexte(
+                        texte: widget.fv.genre!.join('/'),
+                        alignment: TextAlign.start,
+                      ),
                     ] else ...[
                       ComposantTexte(texte: ''),
                     ],

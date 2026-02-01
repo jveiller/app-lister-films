@@ -30,7 +30,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
     required String titre,
     int? annee,
     int? duree,
-    String? genre,
+    List<String>? genre,
     String? plateforme,
     String? description,
     double? note,
@@ -73,7 +73,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
   void modifFilmVu({
     required FilmsVu fv,
     String? titre,
-    String? genre,
+    List<String>? genre,
     int? annee,
     int? duree,
     double? note,
@@ -132,7 +132,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
             if (fv.titre.toLowerCase().contains(
                   _searchController.text.toLowerCase(),
                 ) ||
-                (fv.genre ?? '').toLowerCase().contains(
+                ((fv.genre ?? []).join(',')).toLowerCase().contains(
                   _searchController.text.toLowerCase(),
                 ) ||
                 (fv.realisateur ?? '').toLowerCase().contains(

@@ -1,9 +1,10 @@
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/commun/couleur.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_date.dart';
-import 'package:culture_app1/commun/elements/form/champs/champ_deroulant.dart';
+//import 'package:culture_app1/commun/elements/form/champs/champ_deroulant.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_duree.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_liste.dart';
+import 'package:culture_app1/commun/elements/form/champs/champ_liste_deroulant.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_nombre.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_note.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_texte.dart';
@@ -31,7 +32,8 @@ class FormAjouterFilmVu extends StatefulWidget {
 
 class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
   final titreController = TextEditingController();
-  String genreController = '';
+  //String genreController = '';
+  List<String> genres = [];
   final heureController = TextEditingController();
   final minuteController = TextEditingController();
   final noteController = TextEditingController();
@@ -45,21 +47,37 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
   final contexteController = TextEditingController();
   DateTime? dateController;
   final keyForm = GlobalKey<FormState>();
-  final addGenreController = TextEditingController();
+  //final addGenreController = TextEditingController();
   final List<String> listeActeurs = [];
   final List<String> listeCitations = [];
-  late String supprGenreController;
+  //late String supprGenreController;
 
-  void changeGenre(String g) {
+  /*void changeGenre(String g) {
     setState(() {
       genreController = g;
+    });
+  }*/
+
+  void addGenre(String g) {
+    if (!genres.contains(g)) {
+      setState(() {
+        genres.add(g);
+      });
+    }
+  }
+
+  void supprGenre(String g) {
+    setState(() {
+      genres.remove(g);
     });
   }
 
   void addActeur(String a) {
-    setState(() {
-      listeActeurs.add(a);
-    });
+    if (!listeActeurs.contains(a)) {
+      setState(() {
+        listeActeurs.add(a);
+      });
+    }
   }
 
   void supprActeur(String a) {
@@ -69,9 +87,11 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
   }
 
   void addCitation(String c) {
-    setState(() {
-      listeCitations.add(c);
-    });
+    if (!listeCitations.contains(c)) {
+      setState(() {
+        listeCitations.add(c);
+      });
+    }
   }
 
   void supprCitation(String c) {
@@ -114,11 +134,11 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
     });
   }
 
-  @override
+  /*@override
   void initState() {
     super.initState();
-    supprGenreController = widget.listeGenres.first;
-  }
+    //supprGenreController = widget.listeGenres.first;
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +162,7 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
                       necessaire: true,
                     ),
                   ),
-                  Container(
+                  /*Container(
                     margin: EdgeInsets.all(5),
                     child: ChampDeroulant(
                       txt: 'Genre',
@@ -152,6 +172,22 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
                       addController: addGenreController,
                       addFonction: widget.addGenreFonction,
                       supprFonction: widget.supprGenreFonction,
+                    ),
+                  ),*/
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ChampListeDeroulant(
+                      txt: 'Genre',
+                      //initFormController: genreController,
+                      liste: genres,
+                      listeDeroulant: widget.listeGenres,
+                      //changeGenre: changeGenre,
+                      //addController: addGenreController,
+                      addDeroulantFonction: widget.addGenreFonction,
+                      supprDeroulantFonction: widget.supprGenreFonction,
+                      addListeFonction: addGenre,
+                      supprListeFonction: supprGenre,
+                      apresAjoutez: 'un genre',
                     ),
                   ),
                   Container(
@@ -291,7 +327,7 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
                   widget.setFilmState(() {
                     widget.addFilmFonction(
                       titre: titreController.text,
-                      genre: genreController == '' ? null : genreController,
+                      genre: genres.isEmpty ? null : genres,
                       duree:
                           (heureController.text != '') ||
                               (minuteController.text != '')

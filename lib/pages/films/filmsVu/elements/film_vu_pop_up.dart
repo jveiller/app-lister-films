@@ -64,7 +64,10 @@ class _FilmVuPopUpState extends State<FilmVuPopUp> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ComposantTexte(texte: 'Genre', weight: FontWeight.bold),
-                    ComposantTexte(texte: widget.fv.genre!),
+                    ComposantTexte(
+                      texte: widget.fv.genre!.join('/'),
+                      alignment: TextAlign.start,
+                    ),
                   ],
                 ),
               ],
@@ -108,7 +111,8 @@ class _FilmVuPopUpState extends State<FilmVuPopUp> {
                       texte: 'Acteurices principaux',
                       weight: FontWeight.bold,
                     ),
-                    ComposantTexte(texte: widget.fv.acteurs!.join(',')),
+                    for (String a in widget.fv.acteurs!)
+                      ComposantTexte(texte: a, alignment: TextAlign.start),
                   ],
                 ),
               ],
@@ -121,7 +125,10 @@ class _FilmVuPopUpState extends State<FilmVuPopUp> {
                       texte: 'Réalisateur',
                       weight: FontWeight.bold,
                     ),
-                    ComposantTexte(texte: widget.fv.realisateur as String),
+                    ComposantTexte(
+                      texte: widget.fv.realisateur as String,
+                      alignment: TextAlign.start,
+                    ),
                   ],
                 ),
               ],
@@ -150,7 +157,7 @@ class _FilmVuPopUpState extends State<FilmVuPopUp> {
                       weight: FontWeight.bold,
                     ),
                     for (String c in widget.fv.citations!)
-                      ComposantTexte(texte: c),
+                      ComposantTexte(texte: c, alignment: TextAlign.start),
                   ],
                 ),
               ],
@@ -218,11 +225,12 @@ class _FilmVuPopUpState extends State<FilmVuPopUp> {
                     ),
                     TextButton(
                       onPressed: () {
-                        if (widget.fv.genre != null &&
-                            !widget.listeGenres.contains(
-                              widget.fv.genre ?? '',
-                            )) {
-                          widget.addGenreFonction(widget.fv.genre!);
+                        if (widget.fv.genre != null) {
+                          for (var genre in widget.fv.genre!) {
+                            if (!widget.listeGenres.contains(genre)) {
+                              widget.addGenreFonction(genre);
+                            }
+                          }
                         }
                         showDialog(
                           barrierDismissible: false,

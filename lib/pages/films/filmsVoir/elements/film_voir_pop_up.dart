@@ -64,7 +64,10 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ComposantTexte(texte: 'Genre', weight: FontWeight.bold),
-                    ComposantTexte(texte: widget.fv.genre!),
+                    ComposantTexte(
+                      texte: widget.fv.genre!.join('/'),
+                      alignment: TextAlign.start,
+                    ),
                   ],
                 ),
               ],
@@ -94,7 +97,8 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                       texte: 'Acteurices principaux',
                       weight: FontWeight.bold,
                     ),
-                    ComposantTexte(texte: widget.fv.acteurs!.join(',')),
+                    for (String a in widget.fv.acteurs!)
+                      ComposantTexte(texte: a, alignment: TextAlign.start),
                   ],
                 ),
               ],
@@ -107,7 +111,10 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                       texte: 'Réalisateur',
                       weight: FontWeight.bold,
                     ),
-                    ComposantTexte(texte: widget.fv.realisateur as String),
+                    ComposantTexte(
+                      texte: widget.fv.realisateur as String,
+                      alignment: TextAlign.start,
+                    ),
                   ],
                 ),
               ],
@@ -132,7 +139,10 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                       texte: 'Plateforme',
                       weight: FontWeight.bold,
                     ),
-                    ComposantTexte(texte: widget.fv.plateforme as String),
+                    ComposantTexte(
+                      texte: widget.fv.plateforme as String,
+                      alignment: TextAlign.start,
+                    ),
                   ],
                 ),
               ],
@@ -163,8 +173,10 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                     TextButton(
                       onPressed: () async {
                         if (widget.fv.genre != null) {
-                          if (!widget.listeGenres.contains(widget.fv.genre)) {
-                            await widget.addGenreFonction(widget.fv.genre);
+                          for (var genre in widget.fv.genre!) {
+                            if (!widget.listeGenres.contains(genre)) {
+                              await widget.addGenreFonction(genre);
+                            }
                           }
                         }
                         showDialog(

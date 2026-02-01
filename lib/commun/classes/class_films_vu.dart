@@ -4,7 +4,7 @@ class FilmsVu {
   late String titre;
   int? duree;
   double? note;
-  String? genre;
+  List<String>? genre;
   String? plateforme;
   int? annee;
   String? description;
@@ -44,7 +44,7 @@ class FilmsVu {
     note = n;
   }
 
-  void setGenre(String? genre) {
+  void setGenre(List<String>? genre) {
     this.genre = genre;
   }
 
