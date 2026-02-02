@@ -1,4 +1,5 @@
 import 'package:culture_app1/commun/classes/class_films_vu.dart';
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/commun/couleur.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_date.dart';
@@ -19,6 +20,9 @@ class FormModifFilmVu extends StatefulWidget {
   final Function supprGenreFonction;
   final Function setFilmState;
   final Function modifFonction;
+  final List<String> listePlateformes;
+  final Function addPlateformeFonction;
+  final Function supprPlateformeFonction;
   const FormModifFilmVu({
     super.key,
     required this.fv,
@@ -27,6 +31,9 @@ class FormModifFilmVu extends StatefulWidget {
     required this.supprGenreFonction,
     required this.setFilmState,
     required this.modifFonction,
+    required this.listePlateformes,
+    required this.addPlateformeFonction,
+    required this.supprPlateformeFonction,
   });
 
   @override
@@ -37,10 +44,11 @@ class _FormModifFilmVuState extends State<FormModifFilmVu> {
   late TextEditingController titreController;
   //late String genreController;
   late List<String> genres;
+  late List<String> plateformes;
   late TextEditingController heureController;
   late TextEditingController minuteController;
   late TextEditingController noteController;
-  late TextEditingController plateformeController;
+  //late TextEditingController plateformeController;
   late TextEditingController anneeController;
   late TextEditingController descriptionController;
   late TextEditingController realisateurController;
@@ -111,6 +119,20 @@ class _FormModifFilmVuState extends State<FormModifFilmVu> {
     });
   }
 
+  void addPlateforme(String p) {
+    if (!plateformes.contains(p)) {
+      setState(() {
+        plateformes.add(p);
+      });
+    }
+  }
+
+  void supprPlateforme(String p) {
+    setState(() {
+      plateformes.remove(p);
+    });
+  }
+
   void checkOui(val) {
     setState(() {
       ouiIsCheck = val;
@@ -154,11 +176,12 @@ class _FormModifFilmVuState extends State<FormModifFilmVu> {
           : null,
     );
     noteController = TextEditingController(text: widget.fv.note?.toString());
-    plateformeController = TextEditingController(text: widget.fv.plateforme);
+    //plateformeController = TextEditingController(text: widget.fv.plateforme);
     anneeController = TextEditingController(text: widget.fv.annee?.toString());
     descriptionController = TextEditingController(text: widget.fv.description);
     realisateurController = TextEditingController(text: widget.fv.realisateur);
     genres = widget.fv.genre ?? [];
+    plateformes = widget.fv.plateforme ?? [];
     //supprGenreController = widget.listeGenres.first;
     listeActeurs = widget.fv.acteurs ?? [];
     listeCitations = widget.fv.citations ?? [];
@@ -206,7 +229,7 @@ class _FormModifFilmVuState extends State<FormModifFilmVu> {
                   Container(
                     margin: EdgeInsets.all(5),
                     child: ChampListeDeroulant(
-                      txt: 'Genre',
+                      txt: 'Genre·s',
                       //initFormController: genreController,
                       liste: genres,
                       listeDeroulant: widget.listeGenres,
@@ -324,11 +347,28 @@ class _FormModifFilmVuState extends State<FormModifFilmVu> {
                       nbMaxNombres: 4,
                     ),
                   ),
-                  Container(
+                  /*Container(
                     margin: EdgeInsets.all(5),
                     child: ChampTexte(
                       txt: 'Plateforme',
                       champController: plateformeController,
+                    ),
+                  ),*/
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ChampListeDeroulant(
+                      txt: 'Plateforme·s',
+                      //initFormController: genreController,
+                      liste: plateformes,
+                      listeDeroulant: widget.listePlateformes,
+                      //changeGenre: changeGenre,
+                      //addController: addGenreController,
+                      addDeroulantFonction: widget.addPlateformeFonction,
+                      supprDeroulantFonction: widget.supprPlateformeFonction,
+                      addListeFonction: addPlateforme,
+                      supprListeFonction: supprPlateforme,
+                      apresAjoutez: 'une plateforme',
+                      txtFeminin: true,
                     ),
                   ),
                   Container(
@@ -346,9 +386,14 @@ class _FormModifFilmVuState extends State<FormModifFilmVu> {
           actions: [
             ElevatedButton(
               style: ButtonStyle(
+                padding: WidgetStateProperty.all(
+                  EdgeInsets.symmetric(vertical: 15),
+                ),
                 elevation: WidgetStateProperty.all(0.0),
                 backgroundColor: WidgetStateProperty.all(filmJaune),
-                fixedSize: WidgetStateProperty.all(Size(150, 60)),
+                fixedSize: WidgetStateProperty.all(
+                  Size.fromWidth(TailleAdaptateur.width(context, 150)),
+                ),
               ),
               onPressed: () {
                 if (keyForm.currentState!.validate() &&
@@ -365,9 +410,7 @@ class _FormModifFilmVuState extends State<FormModifFilmVu> {
                                 (int.tryParse(minuteController.text) ?? 0)
                           : null,
                       annee: int.tryParse(anneeController.text),
-                      plateforme: plateformeController.text == ''
-                          ? null
-                          : plateformeController.text,
+                      plateforme: plateformes.isEmpty ? null : plateformes,
                       description: descriptionController.text == ''
                           ? null
                           : descriptionController.text,

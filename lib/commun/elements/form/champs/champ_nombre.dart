@@ -1,3 +1,4 @@
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,7 +25,7 @@ class ChampNombre extends StatelessWidget {
       children: [
         ComposantTexte(texte: txt, weight: FontWeight.bold),
         SizedBox(
-          width: largeur,
+          width: TailleAdaptateur.width(context, largeur),
           child: TextFormField(
             cursorColor: Colors.black,
             inputFormatters: nbMaxNombres != null

@@ -1,5 +1,6 @@
 import 'package:culture_app1/commun/classes/class_films_voir.dart';
 import 'package:culture_app1/commun/classes/class_films_vu.dart';
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/commun/couleur.dart';
 import 'package:culture_app1/commun/database/db_film_vu.dart';
@@ -18,15 +19,21 @@ import 'package:hive/hive.dart';
 class FormAvisFilm extends StatefulWidget {
   final FilmsVoir fv;
   final List<String> listeGenres;
+  final List<String> listePlateformes;
   final Function addGenreFonction;
   final Function supprGenreFonction;
+  final Function addPlateformeFonction;
+  final Function supprPlateformeFonction;
   final Function deleteFilmVoirFonction;
   const FormAvisFilm({
     super.key,
     required this.fv,
     required this.listeGenres,
+    required this.listePlateformes,
     required this.addGenreFonction,
     required this.supprGenreFonction,
+    required this.addPlateformeFonction,
+    required this.supprPlateformeFonction,
     required this.deleteFilmVoirFonction,
   });
 
@@ -38,10 +45,11 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
   late TextEditingController titreController;
   //late String genreController;
   late List<String> genres;
+  late List<String> plateformes;
   late TextEditingController heureController;
   late TextEditingController minuteController;
   final noteController = TextEditingController();
-  late TextEditingController plateformeController;
+  //late TextEditingController plateformeController;
   late TextEditingController anneeController;
   late TextEditingController descriptionController;
   late TextEditingController realisateurController;
@@ -50,7 +58,7 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
   bool nonIsCheck = false;
   final contexteController = TextEditingController();
   DateTime? dateController;
-  late String supprGenreController;
+  //late String supprGenreController;
   late List<String> listeActeurs;
   final List<String> listeCitations = [];
   //final addGenreController = TextEditingController();
@@ -63,7 +71,7 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
     int? annee,
     int? duree,
     List<String>? genre,
-    String? plateforme,
+    List<String>? plateforme,
     String? description,
     double? note,
     List<String>? acteurs,
@@ -73,7 +81,7 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
     bool? cinema,
     DateTime? date,
   }) async {
-    var box = await Hive.openBox('filmVu');
+    var box = Hive.box('filmVu');
     int id = box.get('id') ?? 1;
     var newFilm = FilmsVu(
       id: id,
@@ -97,7 +105,6 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
     id += 1;
     await box.put('id', id);
     widget.deleteFilmVoirFonction(widget.fv.id);
-    await box.close();
   }
 
   /*void changeGenre(String g) {
@@ -131,6 +138,20 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
   void supprActeur(String a) {
     setState(() {
       listeActeurs.remove(a);
+    });
+  }
+
+  void addPlateforme(String p) {
+    if (!plateformes.contains(p)) {
+      setState(() {
+        plateformes.add(p);
+      });
+    }
+  }
+
+  void supprPlateforme(String p) {
+    setState(() {
+      plateformes.remove(p);
     });
   }
 
@@ -194,11 +215,12 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
           ? (widget.fv.duree! % 60).toInt().toString()
           : null,
     );
-    plateformeController = TextEditingController(text: widget.fv.plateforme);
+    //plateformeController = TextEditingController(text: widget.fv.plateforme);
     anneeController = TextEditingController(text: widget.fv.annee?.toString());
     descriptionController = TextEditingController(text: widget.fv.description);
     realisateurController = TextEditingController(text: widget.fv.realisateur);
     genres = widget.fv.genre ?? [];
+    plateformes = widget.fv.plateforme ?? [];
     //supprGenreController = widget.listeGenres.first;
     listeActeurs = widget.fv.acteurs ?? [];
   }
@@ -240,7 +262,7 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
                   Container(
                     margin: EdgeInsets.all(5),
                     child: ChampListeDeroulant(
-                      txt: 'Genre',
+                      txt: 'Genre·s',
                       //initFormController: genreController,
                       liste: genres,
                       listeDeroulant: widget.listeGenres,
@@ -358,11 +380,28 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
                       nbMaxNombres: 4,
                     ),
                   ),
-                  Container(
+                  /*Container(
                     margin: EdgeInsets.all(5),
                     child: ChampTexte(
                       txt: 'Plateforme',
                       champController: plateformeController,
+                    ),
+                  ),*/
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ChampListeDeroulant(
+                      txt: 'Plateforme·s',
+                      //initFormController: genreController,
+                      liste: plateformes,
+                      listeDeroulant: widget.listePlateformes,
+                      //changeGenre: changeGenre,
+                      //addController: addGenreController,
+                      addDeroulantFonction: widget.addPlateformeFonction,
+                      supprDeroulantFonction: widget.supprPlateformeFonction,
+                      addListeFonction: addPlateforme,
+                      supprListeFonction: supprPlateforme,
+                      apresAjoutez: 'une plateforme',
+                      txtFeminin: true,
                     ),
                   ),
                   Container(
@@ -382,9 +421,14 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
               margin: EdgeInsets.only(top: 15),
               child: ElevatedButton(
                 style: ButtonStyle(
+                  padding: WidgetStateProperty.all(
+                    EdgeInsets.symmetric(vertical: 15),
+                  ),
                   elevation: WidgetStateProperty.all(0.0),
                   backgroundColor: WidgetStateProperty.all(Colors.white),
-                  fixedSize: WidgetStateProperty.all(Size(130, 60)),
+                  fixedSize: WidgetStateProperty.all(
+                    Size.fromWidth(TailleAdaptateur.width(context, 130)),
+                  ),
                   side: WidgetStateProperty.all(BorderSide(width: 1)),
                 ),
                 onPressed: () {
@@ -402,9 +446,14 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
               margin: EdgeInsets.only(top: 15),
               child: ElevatedButton(
                 style: ButtonStyle(
+                  padding: WidgetStateProperty.all(
+                    EdgeInsets.symmetric(vertical: 15),
+                  ),
                   elevation: WidgetStateProperty.all(0.0),
                   backgroundColor: WidgetStateProperty.all(filmJaune),
-                  fixedSize: WidgetStateProperty.all(Size(130, 60)),
+                  fixedSize: WidgetStateProperty.all(
+                    Size.fromWidth(TailleAdaptateur.width(context, 130)),
+                  ),
                 ),
                 onPressed: () {
                   if (keyForm.currentState!.validate() &&
@@ -419,9 +468,7 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
                                 (int.tryParse(minuteController.text) ?? 0)
                           : null,
                       annee: int.tryParse(anneeController.text),
-                      plateforme: plateformeController.text == ''
-                          ? null
-                          : plateformeController.text,
+                      plateforme: plateformes.isEmpty ? null : plateformes,
                       description: descriptionController.text == ''
                           ? null
                           : descriptionController.text,

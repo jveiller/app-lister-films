@@ -34,6 +34,7 @@ class DbFilmsVoir {
     final db = await getDatabase();
     String? acteurs;
     String? genres;
+    String? plateformes;
     if (film.acteurs != null) {
       acteurs = film.acteurs!.join(',');
     } else {
@@ -44,12 +45,17 @@ class DbFilmsVoir {
     } else {
       genres = null;
     }
+    if (film.plateforme != null) {
+      plateformes = film.plateforme!.join(',');
+    } else {
+      plateformes = null;
+    }
     return await db.insert('filmsVoir3', {
       'titre': film.titre,
       'duree': film.duree,
       'note': film.note,
       'genre': genres,
-      'plateforme': film.plateforme,
+      'plateforme': plateformes,
       'annee': film.annee,
       'description': film.description,
       'acteurs': acteurs,
@@ -62,6 +68,7 @@ class DbFilmsVoir {
     final db = await getDatabase();
     String? acteurs;
     String? genres;
+    String? plateformes;
     if (fv.acteurs != null) {
       acteurs = fv.acteurs!.join(',');
     } else {
@@ -72,6 +79,11 @@ class DbFilmsVoir {
     } else {
       genres = null;
     }
+    if (fv.plateforme != null) {
+      plateformes = fv.plateforme!.join(',');
+    } else {
+      plateformes = null;
+    }
     return await db.update(
       'filmsVoir3',
       {
@@ -79,7 +91,7 @@ class DbFilmsVoir {
         'duree': fv.duree,
         'note': fv.note,
         'genre': genres,
-        'plateforme': fv.plateforme,
+        'plateforme': plateformes,
         'annee': fv.annee,
         'description': fv.description,
         'acteurs': acteurs,
@@ -117,7 +129,7 @@ class DbFilmsVoir {
               : (film['genre'] as String).split(','),
           plateforme: film['plateforme'] == null
               ? null
-              : film['plateforme'] as String,
+              : (film['plateforme'] as String).split(','),
           annee: film['annee'] == null ? null : film['annee'] as int,
           description: film['description'] == null
               ? null

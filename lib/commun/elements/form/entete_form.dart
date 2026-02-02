@@ -1,3 +1,4 @@
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:flutter/material.dart';
 
@@ -10,8 +11,7 @@ class EnteteForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 400,
-      height: 70,
+      height: TailleAdaptateur.width(context, 70),
       decoration: BoxDecoration(border: Border.all(width: 2.0)),
       child: Row(
         children: [
@@ -29,8 +29,8 @@ class EnteteForm extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 70,
-            width: 70,
+            height: TailleAdaptateur.width(context, 70),
+            width: TailleAdaptateur.width(context, 70),
             child: ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -46,7 +46,7 @@ class EnteteForm extends StatelessWidget {
               child: Center(
                 child: Icon(
                   Icons.close_outlined,
-                  size: 30,
+                  size: TailleAdaptateur.font(context, 30),
                   color: Colors.grey[800],
                 ),
               ),

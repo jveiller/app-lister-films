@@ -1,3 +1,4 @@
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -25,7 +26,7 @@ class ComposantTexte extends StatelessWidget {
       texte,
       style: TextStyle(
         color: color,
-        fontSize: size,
+        fontSize: TailleAdaptateur.font(context, size),
         fontWeight: weight,
         fontFamily: family,
       ),

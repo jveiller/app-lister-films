@@ -31,7 +31,7 @@ class BoutonTrierFilm extends StatelessWidget {
           child: ComposantTexte(texte: 'Note'),
         ),
       ],
-      constraints: BoxConstraints(minWidth: 130),
+      //constraints: BoxConstraints(minWidth: 130),
       position: PopupMenuPosition.over,
       offset: const Offset(0, 0),
       shape: RoundedRectangleBorder(
@@ -52,16 +52,19 @@ class BoutonTrierFilm extends StatelessWidget {
           border: Border.all(width: 2.0),
           borderRadius: BorderRadius.circular(45),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ComposantTexte(
-              texte: 'Trier par',
-              color: Colors.grey[800],
-              size: 18,
-            ),
-            Icon(Icons.arrow_drop_down, color: Colors.grey[700], size: 25),
-          ],
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ComposantTexte(
+                texte: 'Trier par',
+                color: Colors.grey[800],
+                size: 18,
+              ),
+              Icon(Icons.arrow_drop_down, color: Colors.grey[700], size: 25),
+            ],
+          ),
         ),
       ),
     );

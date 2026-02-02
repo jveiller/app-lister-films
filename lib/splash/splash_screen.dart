@@ -1,3 +1,4 @@
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/splash/splash_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,12 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 240, 105),
-      body: Center(child: Image.asset('assets/images/logo.png', width: 230)),
+      body: Center(
+        child: Image.asset(
+          'assets/images/logo.png',
+          width: TailleAdaptateur.width(context, 230),
+        ),
+      ),
     );
   }
 }

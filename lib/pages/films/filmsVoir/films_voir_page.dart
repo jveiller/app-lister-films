@@ -1,4 +1,5 @@
 import 'package:culture_app1/commun/classes/class_films_voir.dart';
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/commun/database/db_film_voir.dart';
 import 'package:culture_app1/pages/films/filmsVoir/elements/boutons/bouton_ajouter_film_voir.dart';
@@ -18,23 +19,24 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
   List<FilmsVoir> _filmsVoir = [];
   List<FilmsVoir> _afficheFilmVoir = [];
   List<String> _genres = [];
+  List<String> _plateformes = [];
   bool _initialise = false;
   final _searchController = TextEditingController();
   String tri = 'date';
+  late Box filmBox;
 
   void _addFilmVoir({
     required String titre,
     int? annee,
     int? duree,
     List<String>? genre,
-    String? plateforme,
+    List<String>? plateforme,
     String? description,
     double? note,
     List<String>? acteurs,
     String? realisateur,
   }) async {
-    var box = await Hive.openBox('filmVoir');
-    int id = box.get('id') ?? 1;
+    int id = filmBox.get('id') ?? 1;
     var newFilm = FilmsVoir(
       id: id,
       titre: titre,
@@ -51,8 +53,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
     await DbFilmsVoir.insert(newFilm);
     _fetchFVoir();
     id += 1;
-    await box.put('id', id);
-    await box.close();
+    await filmBox.put('id', id);
   }
 
   void modifFVoir({
@@ -62,7 +63,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
     int? annee,
     int? duree,
     double? note,
-    String? plateforme,
+    List<String>? plateforme,
     String? description,
     List<String>? acteurs,
     String? realisateur,
@@ -118,7 +119,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
                 ((fv.acteurs ?? []).join(',')).toLowerCase().contains(
                   _searchController.text.toLowerCase(),
                 ) ||
-                (fv.plateforme ?? '').toLowerCase().contains(
+                ((fv.plateforme ?? []).join(',')).toLowerCase().contains(
                   _searchController.text.toLowerCase(),
                 )) {
               listeModif.add(fv);
@@ -143,41 +144,65 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
 
   Future<void> addGenre(String g) async {
     if (!_genres.contains(g) && g != '') {
-      var box = await Hive.openBox('film');
       setState(() {
         _genres.insert(0, g);
       });
-      await box.put('genres', _genres);
+      await filmBox.put('genres', _genres);
       await loadGenre();
-      await box.close();
     }
   }
 
   Future<bool> deleteGenre(String g) async {
     if (_genres.length > 1) {
-      var box = await Hive.openBox('film');
       setState(() {
         _genres.remove(g);
       });
-      await box.put('genres', _genres);
+      await filmBox.put('genres', _genres);
       await loadGenre();
-      await box.close();
       return true;
     }
     return false;
   }
 
   Future<void> loadGenre() async {
-    var box = await Hive.openBox('film');
-    List<String>? g = box.get('genres');
+    List<String>? g = filmBox.get('genres');
     setState(() {
       _genres = g ?? ['Comédie'];
     });
-    await box.close();
+  }
+
+  Future<void> addPlateforme(String p) async {
+    if (!_plateformes.contains(p) && p != '') {
+      setState(() {
+        _plateformes.insert(0, p);
+      });
+      await filmBox.put('plateformes', _plateformes);
+      await loadPlateforme();
+    }
+  }
+
+  Future<bool> deletePlateforme(String p) async {
+    if (_plateformes.length > 1) {
+      setState(() {
+        _plateformes.remove(p);
+      });
+      await filmBox.put('plateformes', _plateformes);
+      await loadPlateforme();
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> loadPlateforme() async {
+    List<String>? p = filmBox.get('plateformes');
+    setState(() {
+      _plateformes = p ?? ['Netflix'];
+    });
   }
 
   void triDureeFV() {
     setState(() {
+      tri = 'duree';
       _filmsVoir.sort(
         (a, b) => (a.duree ?? double.maxFinite.toInt()).compareTo(
           b.duree ?? double.maxFinite.toInt(),
@@ -188,12 +213,14 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
 
   void triNoteFV() {
     setState(() {
+      tri = 'note';
       _filmsVoir.sort((a, b) => (b.note ?? 0).compareTo(a.note ?? 0));
     });
   }
 
   void triAjoutFV() {
     setState(() {
+      tri = 'date';
       _filmsVoir.sort((a, b) => (b.id).compareTo(a.id));
     });
   }
@@ -204,10 +231,12 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
 
   @override //à mettre avant les méthodes utilisant des instances
   void initState() {
-    //Donne les valeurs initiales de la BdD à _filmsVoir et genre
+    //Donne les valeurs initiales de la BdD à _filmsVoir, genres et plateformes
     super.initState();
+    filmBox = Hive.box('film');
     _fetchFVoir();
     loadGenre();
+    loadPlateforme();
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -217,7 +246,11 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
     return Column(
       children: [
         Container(
-          margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+          margin: EdgeInsets.only(
+            top: 20,
+            left: TailleAdaptateur.width(context, 20),
+            right: TailleAdaptateur.width(context, 20),
+          ),
           child: SearchBar(
             controller: _searchController,
             leading: const Icon(Icons.search),
@@ -231,21 +264,28 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              width: 135,
-              height: 50,
-              margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              width: TailleAdaptateur.width(context, 135),
+              margin: EdgeInsets.symmetric(
+                horizontal: TailleAdaptateur.width(context, 30),
+                vertical: 20,
+              ),
               child: BoutonAjouterFilmVoir(
                 listeGenre: _genres,
                 addFilmFonction: _addFilmVoir,
                 setFilmState: setState,
                 addGenreFonction: addGenre,
                 deleteGenreFonction: deleteGenre,
+                listePlateformes: _plateformes,
+                addPlateformeFonction: addPlateforme,
+                supprPlateformeFonction: deletePlateforme,
               ),
             ),
             Container(
-              width: 130,
-              height: 50,
-              margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              width: TailleAdaptateur.width(context, 135),
+              margin: EdgeInsets.symmetric(
+                horizontal: TailleAdaptateur.width(context, 30),
+                vertical: 20,
+              ),
               child: BoutonTrierFilm(
                 fonctionTriAjout: triAjoutFV,
                 fonctionTriDuree: triDureeFV,
@@ -272,6 +312,9 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
                   modifFilmFonction: modifFVoir,
                   addGenreFonction: addGenre,
                   supprGenreFonction: deleteGenre,
+                  listePlateformes: _plateformes,
+                  addPlateformeFonction: addPlateforme,
+                  supprPlateformeFonction: deletePlateforme,
                 ),
             ],
           ),

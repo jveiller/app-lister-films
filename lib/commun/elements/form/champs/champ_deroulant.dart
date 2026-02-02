@@ -248,10 +248,7 @@ class _ChampDeroulantState extends State<ChampDeroulant> {
                                 }
                               });
 
-                              Navigator.pop(
-                                // ignore: use_build_context_synchronously
-                                context,
-                              );
+                              Navigator.pop(context);
                             }
                           },
                           child: ComposantTexte(texte: 'Valider'),

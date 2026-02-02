@@ -1,3 +1,4 @@
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/commun/elements/boutons/bouton_annuler.dart';
 import 'package:flutter/material.dart';
@@ -390,7 +391,7 @@ class _ChampListeDeroulantState extends State<ChampListeDeroulant> {
             ),
             Container(
               margin: EdgeInsets.only(left: 10),
-              width: widget.largeurCarte,
+              width: TailleAdaptateur.width(context, widget.largeurCarte),
               child: Column(
                 children: [
                   for (String l in widget.liste) ...[

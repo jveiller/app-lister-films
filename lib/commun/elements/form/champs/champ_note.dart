@@ -1,3 +1,4 @@
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +27,7 @@ class ChampNote extends StatelessWidget {
         Row(
           children: [
             SizedBox(
-              width: 60,
+              width: TailleAdaptateur.width(context, 60),
               child: TextFormField(
                 cursorColor: Colors.black,
                 inputFormatters: [

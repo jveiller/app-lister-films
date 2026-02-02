@@ -7,6 +7,8 @@ import 'package:hive_flutter/adapters.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  await Hive.openBox('film');
+  await Hive.openBox('filmVu');
   runApp(ProviderScope(child: MyApp()));
 }
 

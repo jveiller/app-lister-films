@@ -43,6 +43,12 @@ class DbFilmsVu {
     String? acteurs;
     String? citations;
     String? genres;
+    String? plateformes;
+    if (film.plateforme != null) {
+      plateformes = film.plateforme!.join(',');
+    } else {
+      plateformes = null;
+    }
     if (film.acteurs != null) {
       acteurs = film.acteurs!.join(',');
     } else {
@@ -63,7 +69,7 @@ class DbFilmsVu {
       'duree': film.duree,
       'note': film.note,
       'genre': genres,
-      'plateforme': film.plateforme,
+      'plateforme': plateformes,
       'annee': film.annee,
       'description': film.description,
       'acteurs': acteurs,
@@ -83,6 +89,7 @@ class DbFilmsVu {
     String? acteurs;
     String? citations;
     String? genres;
+    String? plateformes;
     if (fv.acteurs != null) {
       acteurs = fv.acteurs!.join(',');
     } else {
@@ -98,6 +105,11 @@ class DbFilmsVu {
     } else {
       citations = null;
     }
+    if (fv.plateforme != null) {
+      plateformes = fv.plateforme!.join(',');
+    } else {
+      plateformes = null;
+    }
     return await db.update(
       'filmsVu2',
       {
@@ -105,7 +117,7 @@ class DbFilmsVu {
         'duree': fv.duree,
         'note': fv.note,
         'genre': genres,
-        'plateforme': fv.plateforme,
+        'plateforme': plateformes,
         'annee': fv.annee,
         'description': fv.description,
         'acteurs': acteurs,
@@ -149,7 +161,7 @@ class DbFilmsVu {
               : (film['genre'] as String).split(','),
           plateforme: film['plateforme'] == null
               ? null
-              : film['plateforme'] as String,
+              : (film['plateforme'] as String).split(','),
           annee: film['annee'] == null ? null : film['annee'] as int,
           description: film['description'] == null
               ? null

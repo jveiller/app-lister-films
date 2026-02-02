@@ -1,3 +1,4 @@
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/commun/couleur.dart';
 //import 'package:culture_app1/commun/elements/form/champs/champ_deroulant.dart';
@@ -12,15 +13,21 @@ import 'package:flutter/material.dart';
 
 class FormAjouterFilmVoir extends StatefulWidget {
   final List<String> listeGenres;
+  final List<String> listePlateformes;
   final Function addGenreFonction;
   final Function supprGenreFonction;
+  final Function addPlateformeFonction;
+  final Function supprPlateformeFonction;
   final Function setFilmState;
   final Function addFilmFonction;
   const FormAjouterFilmVoir({
     super.key,
     required this.listeGenres,
+    required this.listePlateformes,
     required this.addGenreFonction,
     required this.supprGenreFonction,
+    required this.addPlateformeFonction,
+    required this.supprPlateformeFonction,
     required this.setFilmState,
     required this.addFilmFonction,
   });
@@ -33,10 +40,11 @@ class _FormAjouterFilmVoirState extends State<FormAjouterFilmVoir> {
   final titreController = TextEditingController();
   //String genreController = '';
   List<String> genres = [];
+  List<String> plateformes = [];
   final heureController = TextEditingController();
   final minuteController = TextEditingController();
   final noteController = TextEditingController();
-  final plateformeController = TextEditingController();
+  //final plateformeController = TextEditingController();
   final anneeController = TextEditingController();
   final descriptionController = TextEditingController();
   final realisateurController = TextEditingController();
@@ -76,6 +84,20 @@ class _FormAjouterFilmVoirState extends State<FormAjouterFilmVoir> {
   void supprGenre(String g) {
     setState(() {
       genres.remove(g);
+    });
+  }
+
+  void addPlateforme(String p) {
+    if (!plateformes.contains(p)) {
+      setState(() {
+        plateformes.add(p);
+      });
+    }
+  }
+
+  void supprPlateforme(String p) {
+    setState(() {
+      plateformes.remove(p);
     });
   }
 
@@ -122,7 +144,7 @@ class _FormAjouterFilmVoirState extends State<FormAjouterFilmVoir> {
                   Container(
                     margin: EdgeInsets.all(5),
                     child: ChampListeDeroulant(
-                      txt: 'Genre',
+                      txt: 'Genre·s',
                       //initFormController: genreController,
                       liste: genres,
                       listeDeroulant: widget.listeGenres,
@@ -150,11 +172,28 @@ class _FormAjouterFilmVoirState extends State<FormAjouterFilmVoir> {
                       champController: noteController,
                     ),
                   ),
-                  Container(
+                  /*Container(
                     margin: EdgeInsets.all(5),
                     child: ChampTexte(
                       txt: 'Plateforme',
                       champController: plateformeController,
+                    ),
+                  ),*/
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ChampListeDeroulant(
+                      txt: 'Plateforme·s',
+                      //initFormController: genreController,
+                      liste: plateformes,
+                      listeDeroulant: widget.listePlateformes,
+                      //changeGenre: changeGenre,
+                      //addController: addGenreController,
+                      addDeroulantFonction: widget.addPlateformeFonction,
+                      supprDeroulantFonction: widget.supprPlateformeFonction,
+                      addListeFonction: addPlateforme,
+                      supprListeFonction: supprPlateforme,
+                      apresAjoutez: 'une plateforme',
+                      txtFeminin: true,
                     ),
                   ),
                   Container(
@@ -198,9 +237,14 @@ class _FormAjouterFilmVoirState extends State<FormAjouterFilmVoir> {
           actions: [
             ElevatedButton(
               style: ButtonStyle(
+                padding: WidgetStateProperty.all(
+                  EdgeInsets.symmetric(vertical: 15),
+                ),
                 elevation: WidgetStateProperty.all(0.0),
                 backgroundColor: WidgetStateProperty.all(filmJaune),
-                fixedSize: WidgetStateProperty.all(Size(150, 60)),
+                fixedSize: WidgetStateProperty.all(
+                  Size.fromWidth(TailleAdaptateur.width(context, 150)),
+                ),
               ),
               onPressed: () {
                 if (keyForm.currentState!.validate() &&
@@ -216,9 +260,7 @@ class _FormAjouterFilmVoirState extends State<FormAjouterFilmVoir> {
                                 (int.tryParse(minuteController.text) ?? 0)
                           : null,
                       annee: int.tryParse(anneeController.text),
-                      plateforme: plateformeController.text == ''
-                          ? null
-                          : plateformeController.text,
+                      plateforme: plateformes.isEmpty ? null : plateformes,
                       description: descriptionController.text == ''
                           ? null
                           : descriptionController.text,

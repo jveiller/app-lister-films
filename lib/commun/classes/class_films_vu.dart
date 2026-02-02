@@ -5,7 +5,7 @@ class FilmsVu {
   int? duree;
   double? note;
   List<String>? genre;
-  String? plateforme;
+  List<String>? plateforme;
   int? annee;
   String? description;
   List<String>? citations;
@@ -48,7 +48,7 @@ class FilmsVu {
     this.genre = genre;
   }
 
-  void setPlateforme(String? p) {
+  void setPlateforme(List<String>? p) {
     plateforme = p;
   }
 

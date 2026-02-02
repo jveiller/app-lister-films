@@ -1,3 +1,4 @@
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -55,7 +56,9 @@ class _ChampDateState extends State<ChampDate> {
             onPressed: fonctDate,
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all(Colors.white),
-              fixedSize: WidgetStateProperty.all(Size.fromWidth(160)),
+              fixedSize: WidgetStateProperty.all(
+                Size.fromWidth(TailleAdaptateur.width(context, 160)),
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

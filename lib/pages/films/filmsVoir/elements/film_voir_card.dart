@@ -1,4 +1,5 @@
 import 'package:culture_app1/commun/classes/class_films_voir.dart';
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/pages/films/filmsVoir/elements/film_voir_pop_up.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,9 @@ class FilmVoirCard extends StatefulWidget {
   final Function addGenreFonction;
   final Function supprGenreFonction;
   final Function modifFilmFonction;
+  final List<String> listePlateformes;
+  final Function addPlateformeFonction;
+  final Function supprPlateformeFonction;
   const FilmVoirCard({
     super.key,
     required this.fv,
@@ -18,6 +22,9 @@ class FilmVoirCard extends StatefulWidget {
     required this.modifFilmFonction,
     required this.addGenreFonction,
     required this.supprGenreFonction,
+    required this.listePlateformes,
+    required this.addPlateformeFonction,
+    required this.supprPlateformeFonction,
   });
 
   @override
@@ -39,6 +46,9 @@ class _FilmVoirCardState extends State<FilmVoirCard> {
               modifFilmFonction: widget.modifFilmFonction,
               addGenreFonction: widget.addGenreFonction,
               supprGenreFonction: widget.supprGenreFonction,
+              listePlateformes: widget.listePlateformes,
+              addPlateformeFonction: widget.addPlateformeFonction,
+              supprPlateformeFonction: widget.supprPlateformeFonction,
             );
           },
         );
@@ -50,7 +60,10 @@ class _FilmVoirCardState extends State<FilmVoirCard> {
           borderRadius: BorderRadius.circular(15.0),
         ),
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          margin: EdgeInsets.symmetric(
+            horizontal: TailleAdaptateur.width(context, 20),
+            vertical: 5,
+          ),
           child: Row(
             children: [
               Expanded(

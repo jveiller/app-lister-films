@@ -13,6 +13,9 @@ class FilmVuPopUp extends StatefulWidget {
   final Function addGenreFonction;
   final Function supprGenreFonction;
   final Function modifFilmFonction;
+  final List<String> listePlateformes;
+  final Function addPlateformeFonction;
+  final Function supprPlateformeFonction;
   const FilmVuPopUp({
     super.key,
     required this.fv,
@@ -21,6 +24,9 @@ class FilmVuPopUp extends StatefulWidget {
     required this.modifFilmFonction,
     required this.addGenreFonction,
     required this.supprGenreFonction,
+    required this.listePlateformes,
+    required this.addPlateformeFonction,
+    required this.supprPlateformeFonction,
   });
 
   @override
@@ -63,7 +69,7 @@ class _FilmVuPopUpState extends State<FilmVuPopUp> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ComposantTexte(texte: 'Genre', weight: FontWeight.bold),
+                    ComposantTexte(texte: 'Genre·s', weight: FontWeight.bold),
                     ComposantTexte(
                       texte: widget.fv.genre!.join('/'),
                       alignment: TextAlign.start,
@@ -202,16 +208,16 @@ class _FilmVuPopUpState extends State<FilmVuPopUp> {
                   ],
                 ),
               ],
-              if (widget.fv.plateforme != '' &&
-                  widget.fv.plateforme != null) ...[
+              if (widget.fv.plateforme != null) ...[
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ComposantTexte(
-                      texte: 'Plateforme',
+                      texte: 'Plateforme·s',
                       weight: FontWeight.bold,
                     ),
-                    ComposantTexte(texte: widget.fv.plateforme as String),
+                    for (String p in widget.fv.plateforme!)
+                      ComposantTexte(texte: p, alignment: TextAlign.start),
                   ],
                 ),
               ],
@@ -225,13 +231,13 @@ class _FilmVuPopUpState extends State<FilmVuPopUp> {
                     ),
                     TextButton(
                       onPressed: () {
-                        if (widget.fv.genre != null) {
+                        /*if (widget.fv.genre != null) {
                           for (var genre in widget.fv.genre!) {
                             if (!widget.listeGenres.contains(genre)) {
                               widget.addGenreFonction(genre);
                             }
                           }
-                        }
+                        }*/
                         showDialog(
                           barrierDismissible: false,
                           context: context,
@@ -245,6 +251,11 @@ class _FilmVuPopUpState extends State<FilmVuPopUp> {
                                   supprGenreFonction: widget.supprGenreFonction,
                                   setFilmState: setStateDialog3,
                                   modifFonction: widget.modifFilmFonction,
+                                  listePlateformes: widget.listePlateformes,
+                                  addPlateformeFonction:
+                                      widget.addPlateformeFonction,
+                                  supprPlateformeFonction:
+                                      widget.supprPlateformeFonction,
                                 );
                               },
                             );

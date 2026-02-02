@@ -13,32 +13,51 @@ class BoutonSupprimer extends StatelessWidget {
       onPressed: () {
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: ComposantTexte(
-              texte: 'Supprimer $media',
-              weight: FontWeight.bold,
-              size: 20,
-            ),
-            content: SizedBox(
-              width: 600,
-              child: ComposantTexte(
-                texte: 'Voulez-vous vraiment supprimer ce $media ?',
-                alignment: TextAlign.start,
+          builder: (context) {
+            return Dialog(
+              insetPadding: EdgeInsets.zero,
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.87,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 15,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ComposantTexte(
+                      texte: 'Supprimer $media',
+                      weight: FontWeight.bold,
+                      size: 20,
+                      alignment: TextAlign.center,
+                    ),
+                    SizedBox(height: 20),
+                    ComposantTexte(
+                      texte: 'Voulez-vous vraiment supprimer ce $media ?',
+                      alignment: TextAlign.start,
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        BoutonAnnuler(),
+                        SizedBox(width: 10),
+                        TextButton(
+                          onPressed: () {
+                            delete();
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: ComposantTexte(texte: 'Confirmer'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            actions: [
-              BoutonAnnuler(),
-              TextButton(
-                onPressed: () {
-                  delete();
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-                child: ComposantTexte(texte: 'Confirmer'),
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
       child: ComposantTexte(texte: 'Supprimer', color: Colors.red[900]),

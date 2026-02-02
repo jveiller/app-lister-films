@@ -10,6 +10,9 @@ class FilmVoirPopUp extends StatefulWidget {
   final FilmsVoir fv;
   final Function supprFilmFonction;
   final List<String> listeGenres;
+  final List<String> listePlateformes;
+  final Function addPlateformeFonction;
+  final Function supprPlateformeFonction;
   final Function addGenreFonction;
   final Function supprGenreFonction;
   final Function modifFilmFonction;
@@ -18,6 +21,9 @@ class FilmVoirPopUp extends StatefulWidget {
     required this.fv,
     required this.supprFilmFonction,
     required this.listeGenres,
+    required this.listePlateformes,
+    required this.addPlateformeFonction,
+    required this.supprPlateformeFonction,
     required this.modifFilmFonction,
     required this.addGenreFonction,
     required this.supprGenreFonction,
@@ -63,7 +69,7 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ComposantTexte(texte: 'Genre', weight: FontWeight.bold),
+                    ComposantTexte(texte: 'Genre·s', weight: FontWeight.bold),
                     ComposantTexte(
                       texte: widget.fv.genre!.join('/'),
                       alignment: TextAlign.start,
@@ -130,19 +136,16 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                   ],
                 ),
               ],
-              if (widget.fv.plateforme != '' &&
-                  widget.fv.plateforme != null) ...[
+              if (widget.fv.plateforme != null) ...[
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ComposantTexte(
-                      texte: 'Plateforme',
+                      texte: 'Plateforme·s',
                       weight: FontWeight.bold,
                     ),
-                    ComposantTexte(
-                      texte: widget.fv.plateforme as String,
-                      alignment: TextAlign.start,
-                    ),
+                    for (String p in widget.fv.plateforme!)
+                      ComposantTexte(texte: p, alignment: TextAlign.start),
                   ],
                 ),
               ],
@@ -172,13 +175,13 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                     ),
                     TextButton(
                       onPressed: () async {
-                        if (widget.fv.genre != null) {
+                        /*if (widget.fv.genre != null) {
                           for (var genre in widget.fv.genre!) {
                             if (!widget.listeGenres.contains(genre)) {
                               await widget.addGenreFonction(genre);
                             }
                           }
-                        }
+                        }*/
                         showDialog(
                           barrierDismissible: false,
                           context: context,
@@ -188,8 +191,13 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                                 return FormModifFilmVoir(
                                   fv: widget.fv,
                                   listeGenres: widget.listeGenres,
+                                  listePlateformes: widget.listePlateformes,
                                   addGenreFonction: widget.addGenreFonction,
                                   supprGenreFonction: widget.supprGenreFonction,
+                                  addPlateformeFonction:
+                                      widget.addPlateformeFonction,
+                                  supprPlateformeFonction:
+                                      widget.supprPlateformeFonction,
                                   setFilmState: setStateDialog3,
                                   modifFonction: widget.modifFilmFonction,
                                 );
@@ -206,6 +214,9 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                       addGenreFonction: widget.addGenreFonction,
                       supprGenreFonction: widget.supprGenreFonction,
                       deleteFilmVoirFonction: widget.supprFilmFonction,
+                      listePlateformes: widget.listePlateformes,
+                      addPlateformeFonction: widget.addPlateformeFonction,
+                      supprPlateformeFonction: widget.supprPlateformeFonction,
                     ),
                     BoutonAnnuler(txt: 'Fermer'),
                   ],

@@ -1,4 +1,5 @@
 import 'package:culture_app1/commun/classes/class_films_voir.dart';
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/commun/couleur.dart';
 //import 'package:culture_app1/commun/elements/form/champs/champ_deroulant.dart';
@@ -14,16 +15,22 @@ import 'package:flutter/material.dart';
 class FormModifFilmVoir extends StatefulWidget {
   final FilmsVoir fv;
   final List<String> listeGenres;
+  final List<String> listePlateformes;
   final Function addGenreFonction;
   final Function supprGenreFonction;
+  final Function addPlateformeFonction;
+  final Function supprPlateformeFonction;
   final Function setFilmState;
   final Function modifFonction;
   const FormModifFilmVoir({
     super.key,
     required this.fv,
     required this.listeGenres,
+    required this.listePlateformes,
     required this.addGenreFonction,
     required this.supprGenreFonction,
+    required this.addPlateformeFonction,
+    required this.supprPlateformeFonction,
     required this.setFilmState,
     required this.modifFonction,
   });
@@ -36,19 +43,20 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
   late TextEditingController titreController;
   //late String genreController;
   late List<String> genres;
+  late List<String> plateformes;
   late TextEditingController heureController;
   late TextEditingController minuteController;
   late TextEditingController noteController;
-  late TextEditingController plateformeController;
+  //late TextEditingController plateformeController;
   late TextEditingController anneeController;
   late TextEditingController descriptionController;
   late TextEditingController realisateurController;
-  late String supprGenreController;
+  //late String supprGenreController;
   late List<String> listeActeurs;
   final addGenreController = TextEditingController();
   final keyForm = GlobalKey<FormState>();
-  final keyAddForm = GlobalKey<FormState>();
-  final keySupprForm = GlobalKey<FormState>();
+  //final keyAddForm = GlobalKey<FormState>();
+  //final keySupprForm = GlobalKey<FormState>();
 
   /*void changeGenre(String g) {
     setState(() {
@@ -84,6 +92,20 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
     });
   }
 
+  void addPlateforme(String p) {
+    if (!plateformes.contains(p)) {
+      setState(() {
+        plateformes.add(p);
+      });
+    }
+  }
+
+  void supprPlateforme(String p) {
+    setState(() {
+      plateformes.remove(p);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -99,11 +121,12 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
           : null,
     );
     noteController = TextEditingController(text: widget.fv.note?.toString());
-    plateformeController = TextEditingController(text: widget.fv.plateforme);
+    //plateformeController = TextEditingController(text: widget.fv.plateforme);
     anneeController = TextEditingController(text: widget.fv.annee?.toString());
     descriptionController = TextEditingController(text: widget.fv.description);
     realisateurController = TextEditingController(text: widget.fv.realisateur);
     genres = widget.fv.genre ?? [];
+    plateformes = widget.fv.plateforme ?? [];
     //supprGenreController = widget.listeGenres.first;
     listeActeurs = widget.fv.acteurs ?? [];
   }
@@ -145,7 +168,7 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
                   Container(
                     margin: EdgeInsets.all(5),
                     child: ChampListeDeroulant(
-                      txt: 'Genre',
+                      txt: 'Genre·s',
                       //initFormController: genreController,
                       liste: genres,
                       listeDeroulant: widget.listeGenres,
@@ -173,11 +196,28 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
                       champController: noteController,
                     ),
                   ),
-                  Container(
+                  /*Container(
                     margin: EdgeInsets.all(5),
                     child: ChampTexte(
                       txt: 'Plateforme',
                       champController: plateformeController,
+                    ),
+                  ),*/
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ChampListeDeroulant(
+                      txt: 'Plateforme·s',
+                      //initFormController: genreController,
+                      liste: plateformes,
+                      listeDeroulant: widget.listePlateformes,
+                      //changeGenre: changeGenre,
+                      //addController: addGenreController,
+                      addDeroulantFonction: widget.addPlateformeFonction,
+                      supprDeroulantFonction: widget.supprPlateformeFonction,
+                      addListeFonction: addPlateforme,
+                      supprListeFonction: supprPlateforme,
+                      apresAjoutez: 'une plateforme',
+                      txtFeminin: true,
                     ),
                   ),
                   Container(
@@ -221,9 +261,14 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
           actions: [
             ElevatedButton(
               style: ButtonStyle(
+                padding: WidgetStateProperty.all(
+                  EdgeInsets.symmetric(vertical: 15),
+                ),
                 elevation: WidgetStateProperty.all(0.0),
                 backgroundColor: WidgetStateProperty.all(filmJaune),
-                fixedSize: WidgetStateProperty.all(Size(150, 60)),
+                fixedSize: WidgetStateProperty.all(
+                  Size.fromWidth(TailleAdaptateur.width(context, 150)),
+                ),
               ),
               onPressed: () {
                 if (keyForm.currentState!.validate() &&
@@ -240,9 +285,7 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
                                 (int.tryParse(minuteController.text) ?? 0)
                           : null,
                       annee: int.tryParse(anneeController.text),
-                      plateforme: plateformeController.text == ''
-                          ? null
-                          : plateformeController.text,
+                      plateforme: plateformes.isEmpty ? null : plateformes,
                       description: descriptionController.text == ''
                           ? null
                           : descriptionController.text,

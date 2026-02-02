@@ -1,3 +1,4 @@
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:flutter/material.dart';
 
@@ -28,8 +29,8 @@ class Selecteur extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          height: 60,
-          width: 185,
+          padding: EdgeInsets.symmetric(vertical: 5),
+          width: TailleAdaptateur.width(context, 185),
           decoration: BoxDecoration(
             color: vu == true ? couleurOff : couleurOn,
 
@@ -49,8 +50,8 @@ class Selecteur extends StatelessWidget {
           ),
         ),
         Container(
-          height: 60,
-          width: 185,
+          padding: EdgeInsets.symmetric(vertical: 5),
+          width: TailleAdaptateur.width(context, 185),
           decoration: BoxDecoration(
             color: vu == false ? couleurOff : couleurOn,
 
