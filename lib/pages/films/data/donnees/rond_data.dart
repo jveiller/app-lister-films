@@ -12,8 +12,8 @@ class RondData extends StatelessWidget {
     return Column(
       children: [
         Container(
-          width: TailleAdaptateur.width(context, 150),
-          height: TailleAdaptateur.width(context, 150),
+          width: TailleAdaptateur.width(context, 140),
+          height: TailleAdaptateur.width(context, 140),
           margin: EdgeInsets.symmetric(vertical: 15),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(360),

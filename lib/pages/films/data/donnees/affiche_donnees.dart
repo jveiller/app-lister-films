@@ -1,7 +1,7 @@
 import 'package:culture_app1/commun/classes/class_films_vu.dart';
 import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
-import 'package:culture_app1/pages/films/data/rond_data.dart';
+import 'package:culture_app1/pages/films/data/donnees/rond_data.dart';
 import 'package:flutter/material.dart';
 
 class AfficheDonnees extends StatelessWidget {
@@ -51,14 +51,15 @@ class AfficheDonnees extends StatelessWidget {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: TailleAdaptateur.width(context, 150),
+                  width: TailleAdaptateur.width(context, 140),
                   child: ComposantTexte(texte: 'Films vus', size: 20),
                 ),
                 if (listeFilms.where((f) => f.cinema != null).isNotEmpty) ...[
                   SizedBox(
-                    width: TailleAdaptateur.width(context, 150),
+                    width: TailleAdaptateur.width(context, 140),
                     child: ComposantTexte(
                       texte: 'Films vus au cinéma',
                       size: 20,
@@ -95,10 +96,11 @@ class AfficheDonnees extends StatelessWidget {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (listeFilms.where((f) => f.duree != null).isNotEmpty) ...[
                   SizedBox(
-                    width: TailleAdaptateur.width(context, 150),
+                    width: TailleAdaptateur.width(context, 140),
                     child: ComposantTexte(
                       texte: 'Heures totale regardées',
                       size: 20,
@@ -107,7 +109,7 @@ class AfficheDonnees extends StatelessWidget {
                 ],
                 if (listeFilms.where((f) => f.note != null).isNotEmpty) ...[
                   SizedBox(
-                    width: TailleAdaptateur.width(context, 150),
+                    width: TailleAdaptateur.width(context, 140),
                     child: ComposantTexte(texte: 'Note moyenne', size: 20),
                   ),
                 ],

@@ -86,7 +86,9 @@ class _PageTopState extends State<PageTop> {
         listTri.sort((a, b) => b.annee!.compareTo(a.annee!));
         listValues22 = [];
         for (FilmsVu f in listTri) {
-          listValues22.add(f.annee.toString());
+          if (!listValues22.contains(f.annee.toString())) {
+            listValues22.add(f.annee.toString());
+          }
         }
       }
     } else {
@@ -128,9 +130,10 @@ class _PageTopState extends State<PageTop> {
         _filmsVu = listFilmsDate
             .where(
               (f) =>
-                  f.date!.year == int.parse(value21) && int.parse(value3) == 0
-                  ? true
-                  : f.date!.month == int.parse(value3),
+                  f.date!.year == int.parse(value21) &&
+                  (int.parse(value3) == 0
+                      ? true
+                      : f.date!.month == int.parse(value3)),
             )
             .toList();
       }
@@ -142,9 +145,11 @@ class _PageTopState extends State<PageTop> {
       value3 = val;
       _filmsVu = listFilmsDate
           .where(
-            (f) => f.date!.year == int.parse(value21) && int.parse(value3) == 0
-                ? true
-                : f.date!.month == int.parse(value3),
+            (f) =>
+                f.date!.year == int.parse(value21) &&
+                (int.parse(value3) == 0
+                    ? true
+                    : f.date!.month == int.parse(value3)),
           )
           .toList();
     });
