@@ -1,3 +1,4 @@
+import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +32,9 @@ class BoutonTrierFilm extends StatelessWidget {
           child: ComposantTexte(texte: 'Note'),
         ),
       ],
-      //constraints: BoxConstraints(minWidth: 130),
+      constraints: BoxConstraints(
+        minWidth: TailleAdaptateur.width(context, 130),
+      ),
       position: PopupMenuPosition.over,
       offset: const Offset(0, 0),
       shape: RoundedRectangleBorder(

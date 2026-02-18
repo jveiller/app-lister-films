@@ -9,7 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 class FilmsVuPage extends StatefulWidget {
-  const FilmsVuPage({super.key});
+  final Function actualiseBDD;
+  final List<FilmsVu> listeFV;
+  const FilmsVuPage({
+    super.key,
+    required this.actualiseBDD,
+    required this.listeFV,
+  });
 
   @override
   State<FilmsVuPage> createState() => _FilmsVuPageState();
@@ -124,6 +130,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
       _filmsVu = List.from(
         data.reversed,
       ); // La variable activités prend les valeurs de data
+      widget.actualiseBDD();
       if (!_initialise) {
         _afficheFilmVu = _filmsVu;
         _initialise = true;

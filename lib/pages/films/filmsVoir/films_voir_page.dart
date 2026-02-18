@@ -281,7 +281,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
               ),
             ),
             Container(
-              width: TailleAdaptateur.width(context, 135),
+              width: TailleAdaptateur.width(context, 130),
               margin: EdgeInsets.symmetric(
                 horizontal: TailleAdaptateur.width(context, 30),
                 vertical: 20,

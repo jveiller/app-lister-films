@@ -16,6 +16,12 @@ class BoutonAnnuler extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
+        /*Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DataFilm(listeFilmsVu: listeFilmsVu),
+          ),
+        );*/
         Navigator.pop(context);
       },
       child: ComposantTexte(texte: txt, size: size, color: color),
