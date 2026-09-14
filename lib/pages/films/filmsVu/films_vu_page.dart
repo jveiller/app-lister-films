@@ -204,6 +204,18 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
     });
   }
 
+  // Fait remonter un genre déjà existant en tête de liste quand il est
+  // choisi, pour que les plus utilisés restent facilement accessibles.
+  Future<void> selectionnerGenre(String g) async {
+    if (_genres.remove(g)) {
+      setState(() {
+        _genres.insert(0, g);
+      });
+      await filmBox.put('genres', _genres);
+      await loadGenre();
+    }
+  }
+
   Future<void> addPlateforme(String p) async {
     if (!_plateformes.contains(p) && p != '') {
       setState(() {
@@ -231,6 +243,16 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
     setState(() {
       _plateformes = p ?? ['Netflix'];
     });
+  }
+
+  Future<void> selectionnerPlateforme(String p) async {
+    if (_plateformes.remove(p)) {
+      setState(() {
+        _plateformes.insert(0, p);
+      });
+      await filmBox.put('plateformes', _plateformes);
+      await loadPlateforme();
+    }
   }
 
   Future<void> addPersonne(String p) async {
@@ -262,6 +284,16 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
     });
   }
 
+  Future<void> selectionnerPersonne(String p) async {
+    if (_personnes.remove(p)) {
+      setState(() {
+        _personnes.insert(0, p);
+      });
+      await filmVuBox.put('personnes', _personnes);
+      await loadPersonne();
+    }
+  }
+
   Future<void> addCinema(String c) async {
     if (!_cinemas.contains(c) && c != '') {
       setState(() {
@@ -289,6 +321,16 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
     setState(() {
       _cinemas = c ?? ['UGC'];
     });
+  }
+
+  Future<void> selectionnerCinema(String c) async {
+    if (_cinemas.remove(c)) {
+      setState(() {
+        _cinemas.insert(0, c);
+      });
+      await filmVuBox.put('cinemas', _cinemas);
+      await loadCinema();
+    }
   }
 
   void triDuree() {
@@ -372,15 +414,19 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
                 setFilmState: setState,
                 addGenreFonction: addGenre,
                 deleteGenreFonction: deleteGenre,
+                selectionnerGenreFonction: selectionnerGenre,
                 listePlateformes: _plateformes,
                 addPlateformeFonction: addPlateforme,
                 supprPlateformeFonction: deletePlateforme,
+                selectionnerPlateformeFonction: selectionnerPlateforme,
                 listePersonnes: _personnes,
                 addPersonneFonction: addPersonne,
                 supprPersonneFonction: deletePersonne,
+                selectionnerPersonneFonction: selectionnerPersonne,
                 listeCinemas: _cinemas,
                 addCinemaFonction: addCinema,
                 supprCinemaFonction: deleteCinema,
+                selectionnerCinemaFonction: selectionnerCinema,
               ),
             ),
             Container(
@@ -415,15 +461,19 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
                   modifFilmFonction: modifFilmVu,
                   addGenreFonction: addGenre,
                   supprGenreFonction: deleteGenre,
+                  selectionnerGenreFonction: selectionnerGenre,
                   listePlateformes: _plateformes,
                   addPlateformeFonction: addPlateforme,
                   supprPlateformeFonction: deletePlateforme,
+                  selectionnerPlateformeFonction: selectionnerPlateforme,
                   listePersonnes: _personnes,
                   addPersonneFonction: addPersonne,
                   supprPersonneFonction: deletePersonne,
+                  selectionnerPersonneFonction: selectionnerPersonne,
                   listeCinemas: _cinemas,
                   addCinemaFonction: addCinema,
                   supprCinemaFonction: deleteCinema,
+                  selectionnerCinemaFonction: selectionnerCinema,
                 ),
             ],
           ),

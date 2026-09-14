@@ -6,17 +6,21 @@ class BoutonAjouterFilmVu extends StatelessWidget {
   final List<String> listeGenre;
   final Function addGenreFonction;
   final Function deleteGenreFonction;
+  final Function selectionnerGenreFonction;
   final Function setFilmState;
   final Function addFilmFonction;
   final List<String> listePlateformes;
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
+  final Function selectionnerPlateformeFonction;
   final List<String> listePersonnes;
   final Function addPersonneFonction;
   final Function supprPersonneFonction;
+  final Function selectionnerPersonneFonction;
   final List<String> listeCinemas;
   final Function addCinemaFonction;
   final Function supprCinemaFonction;
+  final Function selectionnerCinemaFonction;
   const BoutonAjouterFilmVu({
     super.key,
     required this.listeGenre,
@@ -24,15 +28,19 @@ class BoutonAjouterFilmVu extends StatelessWidget {
     required this.setFilmState,
     required this.addGenreFonction,
     required this.deleteGenreFonction,
+    required this.selectionnerGenreFonction,
     required this.listePlateformes,
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
+    required this.selectionnerPlateformeFonction,
     required this.listePersonnes,
     required this.addPersonneFonction,
     required this.supprPersonneFonction,
+    required this.selectionnerPersonneFonction,
     required this.listeCinemas,
     required this.addCinemaFonction,
     required this.supprCinemaFonction,
+    required this.selectionnerCinemaFonction,
   });
 
   @override
@@ -47,17 +55,21 @@ class BoutonAjouterFilmVu extends StatelessWidget {
               listeGenres: listeGenre,
               addGenreFonction: addGenreFonction,
               supprGenreFonction: deleteGenreFonction,
+              selectionnerGenreFonction: selectionnerGenreFonction,
               setFilmState: setFilmState,
               addFilmFonction: addFilmFonction,
               listePlateformes: listePlateformes,
               addPlateformeFonction: addPlateformeFonction,
               supprPlateformeFonction: supprPlateformeFonction,
+              selectionnerPlateformeFonction: selectionnerPlateformeFonction,
               listePersonnes: listePersonnes,
               addPersonneFonction: addPersonneFonction,
               supprPersonneFonction: supprPersonneFonction,
+              selectionnerPersonneFonction: selectionnerPersonneFonction,
               listeCinemas: listeCinemas,
               addCinemaFonction: addCinemaFonction,
               supprCinemaFonction: supprCinemaFonction,
+              selectionnerCinemaFonction: selectionnerCinemaFonction,
             );
           },
         );

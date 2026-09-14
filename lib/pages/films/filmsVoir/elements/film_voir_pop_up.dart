@@ -13,12 +13,15 @@ class FilmVoirPopUp extends StatefulWidget {
   final List<String> listePlateformes;
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
+  final Function selectionnerPlateformeFonction;
   final Function addGenreFonction;
   final Function supprGenreFonction;
+  final Function selectionnerGenreFonction;
   final Function modifFilmFonction;
   final List<String> listeRecommandations;
   final Function addRecommandationFonction;
   final Function supprRecommandationFonction;
+  final Function selectionnerRecommandationFonction;
   const FilmVoirPopUp({
     super.key,
     required this.fv,
@@ -27,12 +30,15 @@ class FilmVoirPopUp extends StatefulWidget {
     required this.listePlateformes,
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
+    required this.selectionnerPlateformeFonction,
     required this.modifFilmFonction,
     required this.addGenreFonction,
     required this.supprGenreFonction,
+    required this.selectionnerGenreFonction,
     required this.listeRecommandations,
     required this.addRecommandationFonction,
     required this.supprRecommandationFonction,
+    required this.selectionnerRecommandationFonction,
   });
 
   @override
@@ -215,10 +221,14 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                                   listePlateformes: widget.listePlateformes,
                                   addGenreFonction: widget.addGenreFonction,
                                   supprGenreFonction: widget.supprGenreFonction,
+                                  selectionnerGenreFonction:
+                                      widget.selectionnerGenreFonction,
                                   addPlateformeFonction:
                                       widget.addPlateformeFonction,
                                   supprPlateformeFonction:
                                       widget.supprPlateformeFonction,
+                                  selectionnerPlateformeFonction:
+                                      widget.selectionnerPlateformeFonction,
                                   setFilmState: setStateDialog3,
                                   modifFonction: widget.modifFilmFonction,
                                   listeRecommandations:
@@ -227,6 +237,8 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                                       widget.addRecommandationFonction,
                                   supprRecommandationFonction:
                                       widget.supprRecommandationFonction,
+                                  selectionnerRecommandationFonction:
+                                      widget.selectionnerRecommandationFonction,
                                 );
                               },
                             );
@@ -240,10 +252,14 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                       listeGenres: widget.listeGenres,
                       addGenreFonction: widget.addGenreFonction,
                       supprGenreFonction: widget.supprGenreFonction,
+                      selectionnerGenreFonction:
+                          widget.selectionnerGenreFonction,
                       deleteFilmVoirFonction: widget.supprFilmFonction,
                       listePlateformes: widget.listePlateformes,
                       addPlateformeFonction: widget.addPlateformeFonction,
                       supprPlateformeFonction: widget.supprPlateformeFonction,
+                      selectionnerPlateformeFonction:
+                          widget.selectionnerPlateformeFonction,
                     ),
                     BoutonAnnuler(txt: 'Fermer'),
                   ],

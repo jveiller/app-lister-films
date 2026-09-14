@@ -11,6 +11,7 @@ class ChampListeDeroulant extends StatefulWidget {
   //final TextEditingController? addController;
   final Function? addDeroulantFonction;
   final Function? supprDeroulantFonction;
+  final Function? selectionnerDeroulantFonction;
   final bool txtFeminin;
   //final bool necessaire;
   //final Function changeGenre;
@@ -30,6 +31,7 @@ class ChampListeDeroulant extends StatefulWidget {
     required this.addDeroulantFonction,
     this.txtFeminin = false,
     required this.supprDeroulantFonction,
+    this.selectionnerDeroulantFonction,
     //this.necessaire = false,
     required this.liste,
     required this.addListeFonction,
@@ -376,6 +378,9 @@ class _ChampListeDeroulantState extends State<ChampListeDeroulant> {
                             TextButton(
                               onPressed: () {
                                 widget.addListeFonction(formController);
+                                widget.selectionnerDeroulantFonction?.call(
+                                  formController,
+                                );
                                 Navigator.pop(context);
                               },
                               child: ComposantTexte(texte: 'Ajouter'),

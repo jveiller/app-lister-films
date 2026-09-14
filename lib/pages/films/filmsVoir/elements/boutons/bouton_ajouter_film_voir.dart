@@ -7,14 +7,17 @@ class BoutonAjouterFilmVoir extends StatelessWidget {
   final List<String> listeGenre;
   final Function addGenreFonction;
   final Function deleteGenreFonction;
+  final Function selectionnerGenreFonction;
   final Function setFilmState;
   final Function addFilmFonction;
   final List<String> listePlateformes;
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
+  final Function selectionnerPlateformeFonction;
   final List<String> listeRecommandations;
   final Function addRecommandationFonction;
   final Function supprRecommandationFonction;
+  final Function selectionnerRecommandationFonction;
   const BoutonAjouterFilmVoir({
     super.key,
     required this.listeGenre,
@@ -22,12 +25,15 @@ class BoutonAjouterFilmVoir extends StatelessWidget {
     required this.setFilmState,
     required this.addGenreFonction,
     required this.deleteGenreFonction,
+    required this.selectionnerGenreFonction,
     required this.listePlateformes,
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
+    required this.selectionnerPlateformeFonction,
     required this.listeRecommandations,
     required this.addRecommandationFonction,
     required this.supprRecommandationFonction,
+    required this.selectionnerRecommandationFonction,
   });
 
   @override
@@ -42,14 +48,18 @@ class BoutonAjouterFilmVoir extends StatelessWidget {
               listeGenres: listeGenre,
               addGenreFonction: addGenreFonction,
               supprGenreFonction: deleteGenreFonction,
+              selectionnerGenreFonction: selectionnerGenreFonction,
               setFilmState: setFilmState,
               addFilmFonction: addFilmFonction,
               listePlateformes: listePlateformes,
               addPlateformeFonction: addPlateformeFonction,
               supprPlateformeFonction: supprPlateformeFonction,
+              selectionnerPlateformeFonction: selectionnerPlateformeFonction,
               listeRecommandations: listeRecommandations,
               addRecommandationFonction: addRecommandationFonction,
               supprRecommandationFonction: supprRecommandationFonction,
+              selectionnerRecommandationFonction:
+                  selectionnerRecommandationFonction,
             );
           },
         );

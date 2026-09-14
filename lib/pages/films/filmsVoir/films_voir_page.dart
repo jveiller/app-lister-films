@@ -171,6 +171,16 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
     });
   }
 
+  Future<void> selectionnerGenre(String g) async {
+    if (_genres.remove(g)) {
+      setState(() {
+        _genres.insert(0, g);
+      });
+      await filmBox.put('genres', _genres);
+      await loadGenre();
+    }
+  }
+
   Future<void> addPlateforme(String p) async {
     if (!_plateformes.contains(p) && p != '') {
       setState(() {
@@ -200,6 +210,16 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
     });
   }
 
+  Future<void> selectionnerPlateforme(String p) async {
+    if (_plateformes.remove(p)) {
+      setState(() {
+        _plateformes.insert(0, p);
+      });
+      await filmBox.put('plateformes', _plateformes);
+      await loadPlateforme();
+    }
+  }
+
   Future<void> addRecommandation(String r) async {
     if (!_recommandations.contains(r) && r != '') {
       setState(() {
@@ -220,6 +240,16 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
       return true;
     }
     return false;
+  }
+
+  Future<void> selectionnerRecommandation(String r) async {
+    if (_recommandations.remove(r)) {
+      setState(() {
+        _recommandations.insert(0, r);
+      });
+      await filmBox.put('recommandations', _recommandations);
+      await loadRecommandation();
+    }
   }
 
   Future<void> loadRecommandation() async {
@@ -308,12 +338,15 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
                 setFilmState: setState,
                 addGenreFonction: addGenre,
                 deleteGenreFonction: deleteGenre,
+                selectionnerGenreFonction: selectionnerGenre,
                 listePlateformes: _plateformes,
                 addPlateformeFonction: addPlateforme,
                 supprPlateformeFonction: deletePlateforme,
+                selectionnerPlateformeFonction: selectionnerPlateforme,
                 listeRecommandations: _recommandations,
                 addRecommandationFonction: addRecommandation,
                 supprRecommandationFonction: deleteRecommandation,
+                selectionnerRecommandationFonction: selectionnerRecommandation,
               ),
             ),
             Container(
@@ -348,12 +381,16 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
                   modifFilmFonction: modifFVoir,
                   addGenreFonction: addGenre,
                   supprGenreFonction: deleteGenre,
+                  selectionnerGenreFonction: selectionnerGenre,
                   listePlateformes: _plateformes,
                   addPlateformeFonction: addPlateforme,
                   supprPlateformeFonction: deletePlateforme,
+                  selectionnerPlateformeFonction: selectionnerPlateforme,
                   listeRecommandations: _recommandations,
                   addRecommandationFonction: addRecommandation,
                   supprRecommandationFonction: deleteRecommandation,
+                  selectionnerRecommandationFonction:
+                      selectionnerRecommandation,
                 ),
             ],
           ),

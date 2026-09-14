@@ -18,13 +18,16 @@ class FormModifFilmVoir extends StatefulWidget {
   final List<String> listePlateformes;
   final Function addGenreFonction;
   final Function supprGenreFonction;
+  final Function selectionnerGenreFonction;
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
+  final Function selectionnerPlateformeFonction;
   final Function setFilmState;
   final Function modifFonction;
   final List<String> listeRecommandations;
   final Function addRecommandationFonction;
   final Function supprRecommandationFonction;
+  final Function selectionnerRecommandationFonction;
   const FormModifFilmVoir({
     super.key,
     required this.fv,
@@ -32,13 +35,16 @@ class FormModifFilmVoir extends StatefulWidget {
     required this.listePlateformes,
     required this.addGenreFonction,
     required this.supprGenreFonction,
+    required this.selectionnerGenreFonction,
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
+    required this.selectionnerPlateformeFonction,
     required this.setFilmState,
     required this.modifFonction,
     required this.listeRecommandations,
     required this.addRecommandationFonction,
     required this.supprRecommandationFonction,
+    required this.selectionnerRecommandationFonction,
   });
 
   @override
@@ -198,6 +204,8 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
                       //addController: addGenreController,
                       addDeroulantFonction: widget.addGenreFonction,
                       supprDeroulantFonction: widget.supprGenreFonction,
+                      selectionnerDeroulantFonction:
+                          widget.selectionnerGenreFonction,
                       addListeFonction: addGenre,
                       supprListeFonction: supprGenre,
                       apresAjoutez: 'un genre',
@@ -236,6 +244,8 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
                       //addController: addGenreController,
                       addDeroulantFonction: widget.addPlateformeFonction,
                       supprDeroulantFonction: widget.supprPlateformeFonction,
+                      selectionnerDeroulantFonction:
+                          widget.selectionnerPlateformeFonction,
                       addListeFonction: addPlateforme,
                       supprListeFonction: supprPlateforme,
                       apresAjoutez: 'une plateforme',
@@ -268,6 +278,8 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
                       addDeroulantFonction: widget.addRecommandationFonction,
                       supprDeroulantFonction:
                           widget.supprRecommandationFonction,
+                      selectionnerDeroulantFonction:
+                          widget.selectionnerRecommandationFonction,
                       addListeFonction: addRecommandation,
                       supprListeFonction: supprRecommandation,
                       apresAjoutez: 'une recommandation',

@@ -22,8 +22,10 @@ class FormAvisFilm extends StatefulWidget {
   final List<String> listePlateformes;
   final Function addGenreFonction;
   final Function supprGenreFonction;
+  final Function selectionnerGenreFonction;
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
+  final Function selectionnerPlateformeFonction;
   final Function deleteFilmVoirFonction;
   const FormAvisFilm({
     super.key,
@@ -32,8 +34,10 @@ class FormAvisFilm extends StatefulWidget {
     required this.listePlateformes,
     required this.addGenreFonction,
     required this.supprGenreFonction,
+    required this.selectionnerGenreFonction,
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
+    required this.selectionnerPlateformeFonction,
     required this.deleteFilmVoirFonction,
   });
 
@@ -270,6 +274,8 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
                       //addController: addGenreController,
                       addDeroulantFonction: widget.addGenreFonction,
                       supprDeroulantFonction: widget.supprGenreFonction,
+                      selectionnerDeroulantFonction:
+                          widget.selectionnerGenreFonction,
                       addListeFonction: addGenre,
                       supprListeFonction: supprGenre,
                       apresAjoutez: 'un genre',
@@ -398,6 +404,8 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
                       //addController: addGenreController,
                       addDeroulantFonction: widget.addPlateformeFonction,
                       supprDeroulantFonction: widget.supprPlateformeFonction,
+                      selectionnerDeroulantFonction:
+                          widget.selectionnerPlateformeFonction,
                       addListeFonction: addPlateforme,
                       supprListeFonction: supprPlateforme,
                       apresAjoutez: 'une plateforme',

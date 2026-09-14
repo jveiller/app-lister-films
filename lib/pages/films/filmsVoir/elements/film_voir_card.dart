@@ -10,13 +10,16 @@ class FilmVoirCard extends StatefulWidget {
   final List<String> listeGenres;
   final Function addGenreFonction;
   final Function supprGenreFonction;
+  final Function selectionnerGenreFonction;
   final Function modifFilmFonction;
   final List<String> listePlateformes;
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
+  final Function selectionnerPlateformeFonction;
   final List<String> listeRecommandations;
   final Function addRecommandationFonction;
   final Function supprRecommandationFonction;
+  final Function selectionnerRecommandationFonction;
   const FilmVoirCard({
     super.key,
     required this.fv,
@@ -25,12 +28,15 @@ class FilmVoirCard extends StatefulWidget {
     required this.modifFilmFonction,
     required this.addGenreFonction,
     required this.supprGenreFonction,
+    required this.selectionnerGenreFonction,
     required this.listePlateformes,
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
+    required this.selectionnerPlateformeFonction,
     required this.listeRecommandations,
     required this.addRecommandationFonction,
     required this.supprRecommandationFonction,
+    required this.selectionnerRecommandationFonction,
   });
 
   @override
@@ -52,12 +58,17 @@ class _FilmVoirCardState extends State<FilmVoirCard> {
               modifFilmFonction: widget.modifFilmFonction,
               addGenreFonction: widget.addGenreFonction,
               supprGenreFonction: widget.supprGenreFonction,
+              selectionnerGenreFonction: widget.selectionnerGenreFonction,
               listePlateformes: widget.listePlateformes,
               addPlateformeFonction: widget.addPlateformeFonction,
               supprPlateformeFonction: widget.supprPlateformeFonction,
+              selectionnerPlateformeFonction:
+                  widget.selectionnerPlateformeFonction,
               listeRecommandations: widget.listeRecommandations,
               addRecommandationFonction: widget.addRecommandationFonction,
               supprRecommandationFonction: widget.supprRecommandationFonction,
+              selectionnerRecommandationFonction:
+                  widget.selectionnerRecommandationFonction,
             );
           },
         );

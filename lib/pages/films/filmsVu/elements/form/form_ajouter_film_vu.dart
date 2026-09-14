@@ -16,33 +16,41 @@ class FormAjouterFilmVu extends StatefulWidget {
   final List<String> listeGenres;
   final Function addGenreFonction;
   final Function supprGenreFonction;
+  final Function selectionnerGenreFonction;
   final Function setFilmState;
   final Function addFilmFonction;
   final List<String> listePlateformes;
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
+  final Function selectionnerPlateformeFonction;
   final List<String> listePersonnes;
   final Function addPersonneFonction;
   final Function supprPersonneFonction;
+  final Function selectionnerPersonneFonction;
   final List<String> listeCinemas;
   final Function addCinemaFonction;
   final Function supprCinemaFonction;
+  final Function selectionnerCinemaFonction;
   const FormAjouterFilmVu({
     super.key,
     required this.listeGenres,
     required this.addGenreFonction,
     required this.supprGenreFonction,
+    required this.selectionnerGenreFonction,
     required this.setFilmState,
     required this.addFilmFonction,
     required this.listePlateformes,
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
+    required this.selectionnerPlateformeFonction,
     required this.listePersonnes,
     required this.addPersonneFonction,
     required this.supprPersonneFonction,
+    required this.selectionnerPersonneFonction,
     required this.listeCinemas,
     required this.addCinemaFonction,
     required this.supprCinemaFonction,
+    required this.selectionnerCinemaFonction,
   });
 
   @override
@@ -286,6 +294,8 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
                       //addController: addGenreController,
                       addDeroulantFonction: widget.addGenreFonction,
                       supprDeroulantFonction: widget.supprGenreFonction,
+                      selectionnerDeroulantFonction:
+                          widget.selectionnerGenreFonction,
                       addListeFonction: addGenre,
                       supprListeFonction: supprGenre,
                       apresAjoutez: 'un genre',
@@ -388,6 +398,8 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
                         listeDeroulant: widget.listeCinemas,
                         addDeroulantFonction: widget.addCinemaFonction,
                         supprDeroulantFonction: widget.supprCinemaFonction,
+                        selectionnerDeroulantFonction:
+                            widget.selectionnerCinemaFonction,
                         addListeFonction: addCinema,
                         supprListeFonction: supprCinema,
                         apresAjoutez: 'un cinéma',
@@ -441,6 +453,8 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
                         listeDeroulant: widget.listePersonnes,
                         addDeroulantFonction: widget.addPersonneFonction,
                         supprDeroulantFonction: widget.supprPersonneFonction,
+                        selectionnerDeroulantFonction:
+                            widget.selectionnerPersonneFonction,
                         addListeFonction: addPersonne,
                         supprListeFonction: supprPersonne,
                         apresAjoutez: 'une personne',
@@ -483,6 +497,8 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
                       //addController: addGenreController,
                       addDeroulantFonction: widget.addPlateformeFonction,
                       supprDeroulantFonction: widget.supprPlateformeFonction,
+                      selectionnerDeroulantFonction:
+                          widget.selectionnerPlateformeFonction,
                       addListeFonction: addPlateforme,
                       supprListeFonction: supprPlateforme,
                       apresAjoutez: 'une plateforme',

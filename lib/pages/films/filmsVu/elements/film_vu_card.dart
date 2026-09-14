@@ -10,16 +10,20 @@ class FilmVuCard extends StatefulWidget {
   final List<String> listeGenres;
   final Function addGenreFonction;
   final Function supprGenreFonction;
+  final Function selectionnerGenreFonction;
   final Function modifFilmFonction;
   final List<String> listePlateformes;
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
+  final Function selectionnerPlateformeFonction;
   final List<String> listePersonnes;
   final Function addPersonneFonction;
   final Function supprPersonneFonction;
+  final Function selectionnerPersonneFonction;
   final List<String> listeCinemas;
   final Function addCinemaFonction;
   final Function supprCinemaFonction;
+  final Function selectionnerCinemaFonction;
   const FilmVuCard({
     super.key,
     required this.fv,
@@ -28,15 +32,19 @@ class FilmVuCard extends StatefulWidget {
     required this.modifFilmFonction,
     required this.addGenreFonction,
     required this.supprGenreFonction,
+    required this.selectionnerGenreFonction,
     required this.listePlateformes,
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
+    required this.selectionnerPlateformeFonction,
     required this.listePersonnes,
     required this.addPersonneFonction,
     required this.supprPersonneFonction,
+    required this.selectionnerPersonneFonction,
     required this.listeCinemas,
     required this.addCinemaFonction,
     required this.supprCinemaFonction,
+    required this.selectionnerCinemaFonction,
   });
 
   @override
@@ -58,15 +66,21 @@ class _FilmVuCardState extends State<FilmVuCard> {
               modifFilmFonction: widget.modifFilmFonction,
               addGenreFonction: widget.addGenreFonction,
               supprGenreFonction: widget.supprGenreFonction,
+              selectionnerGenreFonction: widget.selectionnerGenreFonction,
               listePlateformes: widget.listePlateformes,
               addPlateformeFonction: widget.addPlateformeFonction,
               supprPlateformeFonction: widget.supprPlateformeFonction,
+              selectionnerPlateformeFonction:
+                  widget.selectionnerPlateformeFonction,
               listePersonnes: widget.listePersonnes,
               addPersonneFonction: widget.addPersonneFonction,
               supprPersonneFonction: widget.supprPersonneFonction,
+              selectionnerPersonneFonction:
+                  widget.selectionnerPersonneFonction,
               listeCinemas: widget.listeCinemas,
               addCinemaFonction: widget.addCinemaFonction,
               supprCinemaFonction: widget.supprCinemaFonction,
+              selectionnerCinemaFonction: widget.selectionnerCinemaFonction,
             );
           },
         );
