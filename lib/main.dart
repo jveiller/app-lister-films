@@ -9,6 +9,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('film');
   await Hive.openBox('filmVu');
+  await Hive.openBox('serie');
   runApp(ProviderScope(child: MyApp()));
 }
 
