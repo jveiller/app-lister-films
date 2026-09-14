@@ -20,11 +20,11 @@ class DbFilmsVu {
     String path = join(await getDatabasesPath(), 'filmsVu2.db');
     return await openDatabase(
       path,
-      version: 3,
+      version: 5,
       //Création de la table si nouvelle base de donnée
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE filmsVu2 (id INTEGER PRIMARY KEY, titre TEXT, duree INTEGER, note DEC, genre TEXT, plateforme TEXT, annee INTEGER, description TEXT, acteurs TEXT, citations TEXT, realisateur TEXT, cinema BOOLEAN, contexte TEXT, date TEXT)',
+          'CREATE TABLE filmsVu2 (id INTEGER PRIMARY KEY, titre TEXT, duree INTEGER, note DEC, genre TEXT, plateforme TEXT, annee INTEGER, description TEXT, acteurs TEXT, citations TEXT, realisateur TEXT, cinema BOOLEAN, contexte TEXT, date TEXT, accompagne BOOLEAN, personnes TEXT, cinemas TEXT)',
         );
       },
       onUpgrade: (db, oldVersion, newVersion) async {
@@ -32,6 +32,15 @@ class DbFilmsVu {
           await db.execute("ALTER TABLE filmsVu2 ADD COLUMN cinema BOOLEAN");
           await db.execute("ALTER TABLE filmsVu2 ADD COLUMN contexte TEXT");
           await db.execute("ALTER TABLE filmsVu2 ADD COLUMN date TEXT");
+        }
+        if (oldVersion < 4) {
+          await db.execute(
+            "ALTER TABLE filmsVu2 ADD COLUMN accompagne BOOLEAN",
+          );
+          await db.execute("ALTER TABLE filmsVu2 ADD COLUMN personnes TEXT");
+        }
+        if (oldVersion < 5) {
+          await db.execute("ALTER TABLE filmsVu2 ADD COLUMN cinemas TEXT");
         }
       },
     );
@@ -64,6 +73,18 @@ class DbFilmsVu {
     } else {
       citations = null;
     }
+    String? personnes;
+    if (film.personnes != null) {
+      personnes = film.personnes!.join(',');
+    } else {
+      personnes = null;
+    }
+    String? cinemas;
+    if (film.cinemas != null) {
+      cinemas = film.cinemas!.join(',');
+    } else {
+      cinemas = null;
+    }
     return await db.insert('filmsVu2', {
       'titre': film.titre,
       'duree': film.duree,
@@ -80,6 +101,9 @@ class DbFilmsVu {
       'date': film.date == null
           ? null
           : DateFormat("dd/MM/yyyy").format(film.date!),
+      'accompagne': film.accompagne,
+      'personnes': personnes,
+      'cinemas': cinemas,
     });
   }
 
@@ -110,6 +134,18 @@ class DbFilmsVu {
     } else {
       plateformes = null;
     }
+    String? personnes;
+    if (fv.personnes != null) {
+      personnes = fv.personnes!.join(',');
+    } else {
+      personnes = null;
+    }
+    String? cinemas;
+    if (fv.cinemas != null) {
+      cinemas = fv.cinemas!.join(',');
+    } else {
+      cinemas = null;
+    }
     return await db.update(
       'filmsVu2',
       {
@@ -128,6 +164,9 @@ class DbFilmsVu {
         'date': fv.date == null
             ? null
             : DateFormat("dd/MM/yyyy").format(fv.date!),
+        'accompagne': fv.accompagne,
+        'personnes': personnes,
+        'cinemas': cinemas,
       },
       where: 'id=?',
       whereArgs: [fv.id],
@@ -186,6 +225,17 @@ class DbFilmsVu {
           date: film['date'] == null
               ? null
               : DateFormat("dd/MM/yyyy").parse(film['date'] as String),
+          accompagne: film['accompagne'] == null
+              ? null
+              : film['accompagne'] == 1
+              ? true
+              : false,
+          personnes: film['personnes'] == null
+              ? null
+              : (film['personnes'] as String).split(','),
+          cinemas: film['cinemas'] == null
+              ? null
+              : (film['cinemas'] as String).split(','),
         ),
       );
     }

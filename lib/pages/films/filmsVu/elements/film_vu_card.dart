@@ -14,6 +14,12 @@ class FilmVuCard extends StatefulWidget {
   final List<String> listePlateformes;
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
+  final List<String> listePersonnes;
+  final Function addPersonneFonction;
+  final Function supprPersonneFonction;
+  final List<String> listeCinemas;
+  final Function addCinemaFonction;
+  final Function supprCinemaFonction;
   const FilmVuCard({
     super.key,
     required this.fv,
@@ -25,6 +31,12 @@ class FilmVuCard extends StatefulWidget {
     required this.listePlateformes,
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
+    required this.listePersonnes,
+    required this.addPersonneFonction,
+    required this.supprPersonneFonction,
+    required this.listeCinemas,
+    required this.addCinemaFonction,
+    required this.supprCinemaFonction,
   });
 
   @override
@@ -49,6 +61,12 @@ class _FilmVuCardState extends State<FilmVuCard> {
               listePlateformes: widget.listePlateformes,
               addPlateformeFonction: widget.addPlateformeFonction,
               supprPlateformeFonction: widget.supprPlateformeFonction,
+              listePersonnes: widget.listePersonnes,
+              addPersonneFonction: widget.addPersonneFonction,
+              supprPersonneFonction: widget.supprPersonneFonction,
+              listeCinemas: widget.listeCinemas,
+              addCinemaFonction: widget.addCinemaFonction,
+              supprCinemaFonction: widget.supprCinemaFonction,
             );
           },
         );

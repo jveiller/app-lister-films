@@ -11,6 +11,12 @@ class BoutonAjouterFilmVu extends StatelessWidget {
   final List<String> listePlateformes;
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
+  final List<String> listePersonnes;
+  final Function addPersonneFonction;
+  final Function supprPersonneFonction;
+  final List<String> listeCinemas;
+  final Function addCinemaFonction;
+  final Function supprCinemaFonction;
   const BoutonAjouterFilmVu({
     super.key,
     required this.listeGenre,
@@ -21,6 +27,12 @@ class BoutonAjouterFilmVu extends StatelessWidget {
     required this.listePlateformes,
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
+    required this.listePersonnes,
+    required this.addPersonneFonction,
+    required this.supprPersonneFonction,
+    required this.listeCinemas,
+    required this.addCinemaFonction,
+    required this.supprCinemaFonction,
   });
 
   @override
@@ -40,6 +52,12 @@ class BoutonAjouterFilmVu extends StatelessWidget {
               listePlateformes: listePlateformes,
               addPlateformeFonction: addPlateformeFonction,
               supprPlateformeFonction: supprPlateformeFonction,
+              listePersonnes: listePersonnes,
+              addPersonneFonction: addPersonneFonction,
+              supprPersonneFonction: supprPersonneFonction,
+              listeCinemas: listeCinemas,
+              addCinemaFonction: addCinemaFonction,
+              supprCinemaFonction: supprCinemaFonction,
             );
           },
         );

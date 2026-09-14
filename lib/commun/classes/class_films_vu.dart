@@ -14,6 +14,9 @@ class FilmsVu {
   String? contexte;
   bool? cinema;
   DateTime? date;
+  bool? accompagne;
+  List<String>? personnes;
+  List<String>? cinemas;
 
   FilmsVu({
     required this.titre,
@@ -29,6 +32,9 @@ class FilmsVu {
     this.cinema,
     this.contexte,
     this.date,
+    this.accompagne,
+    this.personnes,
+    this.cinemas,
     required this.id,
   });
 
@@ -79,4 +85,10 @@ class FilmsVu {
   void setDate(DateTime? d) => date = d;
 
   void setContexte(String? c) => contexte = c;
+
+  void setAccompagne(bool? a) => accompagne = a;
+
+  void setPersonnes(List<String>? p) => personnes = p;
+
+  void setCinemas(List<String>? c) => cinemas = c;
 }

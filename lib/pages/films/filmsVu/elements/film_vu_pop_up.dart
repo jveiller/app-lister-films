@@ -16,6 +16,12 @@ class FilmVuPopUp extends StatefulWidget {
   final List<String> listePlateformes;
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
+  final List<String> listePersonnes;
+  final Function addPersonneFonction;
+  final Function supprPersonneFonction;
+  final List<String> listeCinemas;
+  final Function addCinemaFonction;
+  final Function supprCinemaFonction;
   const FilmVuPopUp({
     super.key,
     required this.fv,
@@ -27,6 +33,12 @@ class FilmVuPopUp extends StatefulWidget {
     required this.listePlateformes,
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
+    required this.listePersonnes,
+    required this.addPersonneFonction,
+    required this.supprPersonneFonction,
+    required this.listeCinemas,
+    required this.addCinemaFonction,
+    required this.supprCinemaFonction,
   });
 
   @override
@@ -181,6 +193,44 @@ class _FilmVuPopUpState extends State<FilmVuPopUp> {
                   ],
                 ),
               ],
+              if (widget.fv.cinema == true && widget.fv.cinemas != null) ...[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ComposantTexte(texte: 'Cinéma·s', weight: FontWeight.bold),
+                    for (String c in widget.fv.cinemas!)
+                      ComposantTexte(texte: c, alignment: TextAlign.start),
+                  ],
+                ),
+              ],
+              if (widget.fv.accompagne != null) ...[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ComposantTexte(
+                      texte: 'Vu accompagné·e',
+                      weight: FontWeight.bold,
+                    ),
+                    ComposantTexte(
+                      texte: widget.fv.accompagne == false ? 'Non' : 'Oui',
+                    ),
+                  ],
+                ),
+              ],
+              if (widget.fv.accompagne == true &&
+                  widget.fv.personnes != null) ...[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ComposantTexte(
+                      texte: 'Personnes',
+                      weight: FontWeight.bold,
+                    ),
+                    for (String p in widget.fv.personnes!)
+                      ComposantTexte(texte: p, alignment: TextAlign.start),
+                  ],
+                ),
+              ],
               if (widget.fv.contexte != '' && widget.fv.contexte != null) ...[
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,6 +306,15 @@ class _FilmVuPopUpState extends State<FilmVuPopUp> {
                                       widget.addPlateformeFonction,
                                   supprPlateformeFonction:
                                       widget.supprPlateformeFonction,
+                                  listePersonnes: widget.listePersonnes,
+                                  addPersonneFonction:
+                                      widget.addPersonneFonction,
+                                  supprPersonneFonction:
+                                      widget.supprPersonneFonction,
+                                  listeCinemas: widget.listeCinemas,
+                                  addCinemaFonction: widget.addCinemaFonction,
+                                  supprCinemaFonction:
+                                      widget.supprCinemaFonction,
                                 );
                               },
                             );

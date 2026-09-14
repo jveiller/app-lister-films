@@ -21,6 +21,12 @@ class FormAjouterFilmVu extends StatefulWidget {
   final List<String> listePlateformes;
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
+  final List<String> listePersonnes;
+  final Function addPersonneFonction;
+  final Function supprPersonneFonction;
+  final List<String> listeCinemas;
+  final Function addCinemaFonction;
+  final Function supprCinemaFonction;
   const FormAjouterFilmVu({
     super.key,
     required this.listeGenres,
@@ -31,6 +37,12 @@ class FormAjouterFilmVu extends StatefulWidget {
     required this.listePlateformes,
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
+    required this.listePersonnes,
+    required this.addPersonneFonction,
+    required this.supprPersonneFonction,
+    required this.listeCinemas,
+    required this.addCinemaFonction,
+    required this.supprCinemaFonction,
   });
 
   @override
@@ -58,6 +70,11 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
   //final addGenreController = TextEditingController();
   final List<String> listeActeurs = [];
   final List<String> listeCitations = [];
+  List<String> personnes = [];
+  bool? accompagneController;
+  bool accompagneOuiIsCheck = false;
+  bool accompagneNonIsCheck = false;
+  List<String> cinemas = [];
   //late String supprGenreController;
 
   /*void changeGenre(String g) {
@@ -128,6 +145,65 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
     });
   }
 
+  void addPersonne(String p) {
+    if (!personnes.contains(p)) {
+      setState(() {
+        personnes.add(p);
+      });
+    }
+  }
+
+  void supprPersonne(String p) {
+    setState(() {
+      personnes.remove(p);
+    });
+  }
+
+  void checkAccompagneOui(val) {
+    setState(() {
+      accompagneOuiIsCheck = val;
+      if (accompagneNonIsCheck && accompagneOuiIsCheck) {
+        accompagneNonIsCheck = false;
+        accompagneController = true;
+      } else if (!accompagneNonIsCheck && !accompagneOuiIsCheck) {
+        accompagneController = null;
+        personnes = [];
+      } else {
+        accompagneController = true;
+      }
+    });
+  }
+
+  void checkAccompagneNon(val) {
+    setState(() {
+      accompagneNonIsCheck = val;
+      if (accompagneNonIsCheck && accompagneOuiIsCheck) {
+        accompagneOuiIsCheck = false;
+        accompagneController = false;
+        personnes = [];
+      } else if (!accompagneNonIsCheck && !accompagneOuiIsCheck) {
+        accompagneController = null;
+      } else {
+        accompagneController = false;
+        personnes = [];
+      }
+    });
+  }
+
+  void addCinema(String c) {
+    if (!cinemas.contains(c)) {
+      setState(() {
+        cinemas.add(c);
+      });
+    }
+  }
+
+  void supprCinema(String c) {
+    setState(() {
+      cinemas.remove(c);
+    });
+  }
+
   void checkOui(val) {
     setState(() {
       ouiIsCheck = val;
@@ -136,6 +212,7 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
         cinemaController = true;
       } else if (!nonIsCheck && !ouiIsCheck) {
         cinemaController = null;
+        cinemas = [];
       } else {
         cinemaController = true;
       }
@@ -148,10 +225,12 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
       if (nonIsCheck && ouiIsCheck) {
         ouiIsCheck = false;
         cinemaController = false;
+        cinemas = [];
       } else if (!nonIsCheck && !ouiIsCheck) {
         cinemaController = null;
       } else {
         cinemaController = false;
+        cinemas = [];
       }
     });
   }
@@ -300,6 +379,75 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
                       ],
                     ),
                   ),
+                  if (cinemaController == true) ...[
+                    Container(
+                      margin: EdgeInsets.all(5),
+                      child: ChampListeDeroulant(
+                        txt: 'Cinéma·s',
+                        liste: cinemas,
+                        listeDeroulant: widget.listeCinemas,
+                        addDeroulantFonction: widget.addCinemaFonction,
+                        supprDeroulantFonction: widget.supprCinemaFonction,
+                        addListeFonction: addCinema,
+                        supprListeFonction: supprCinema,
+                        apresAjoutez: 'un cinéma',
+                      ),
+                    ),
+                  ],
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ComposantTexte(
+                          texte: 'Vu accompagné·e',
+                          weight: FontWeight.bold,
+                        ),
+                        Row(
+                          children: [
+                            Row(
+                              children: [
+                                ComposantTexte(texte: 'Oui'),
+                                Checkbox(
+                                  value: accompagneOuiIsCheck,
+                                  onChanged: checkAccompagneOui,
+                                  checkColor: Colors.white,
+                                  activeColor: filmJaune,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                ComposantTexte(texte: 'Non'),
+                                Checkbox(
+                                  value: accompagneNonIsCheck,
+                                  onChanged: checkAccompagneNon,
+                                  checkColor: Colors.white,
+                                  activeColor: filmJaune,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (accompagneController == true) ...[
+                    Container(
+                      margin: EdgeInsets.all(5),
+                      child: ChampListeDeroulant(
+                        txt: 'Personnes',
+                        liste: personnes,
+                        listeDeroulant: widget.listePersonnes,
+                        addDeroulantFonction: widget.addPersonneFonction,
+                        supprDeroulantFonction: widget.supprPersonneFonction,
+                        addListeFonction: addPersonne,
+                        supprListeFonction: supprPersonne,
+                        apresAjoutez: 'une personne',
+                        txtFeminin: true,
+                      ),
+                    ),
+                  ],
                   Container(
                     margin: EdgeInsets.all(5),
                     child: ChampTexte(
@@ -394,6 +542,9 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
                       contexte: contexteController.text == ''
                           ? null
                           : contexteController.text,
+                      accompagne: accompagneController,
+                      personnes: personnes.isEmpty ? null : personnes,
+                      cinemas: cinemas.isEmpty ? null : cinemas,
                     );
                   });
                   Navigator.pop(context);

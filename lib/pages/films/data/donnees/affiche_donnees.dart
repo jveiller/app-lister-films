@@ -1,6 +1,7 @@
 import 'package:culture_app1/commun/classes/class_films_vu.dart';
 import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
+import 'package:culture_app1/pages/films/data/donnees/classement_pop_up.dart';
 import 'package:culture_app1/pages/films/data/donnees/rond_data.dart';
 import 'package:flutter/material.dart';
 
@@ -29,8 +30,37 @@ class AfficheDonnees extends StatelessWidget {
     return result;
   }
 
+  Map<String, int> compteOccurrences(
+    List<FilmsVu> films,
+    List<String>? Function(FilmsVu) getter,
+  ) {
+    Map<String, int> comptes = {};
+    for (var film in films) {
+      final valeurs = getter(film);
+      if (valeurs != null) {
+        for (var v in valeurs) {
+          comptes[v] = (comptes[v] ?? 0) + 1;
+        }
+      }
+    }
+    return comptes;
+  }
+
+  List<String> topOccurrences(Map<String, int> comptes) {
+    if (comptes.isEmpty) return [];
+    int max = comptes.values.reduce((a, b) => a > b ? a : b);
+    return comptes.entries
+        .where((e) => e.value == max)
+        .map((e) => e.key)
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final comptePersonnes = compteOccurrences(listeFilms, (f) => f.personnes);
+    final topPersonnes = topOccurrences(comptePersonnes);
+    final compteCinemas = compteOccurrences(listeFilms, (f) => f.cinemas);
+    final topCinemas = topOccurrences(compteCinemas);
     return SingleChildScrollView(
       child: SizedBox(
         width: double.infinity,
@@ -115,6 +145,62 @@ class AfficheDonnees extends StatelessWidget {
                 ],
               ],
             ),
+            if (comptePersonnes.isNotEmpty) ...[
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: ComposantTexte(
+                      texte:
+                          '${topPersonnes.length > 1 ? 'Vu le plus de films avec (ex æquo)' : 'Vu le plus de films avec'} : ${topPersonnes.join(', ')}',
+                      size: 18,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => ClassementPopUp(
+                          titre: 'Films vus par personne',
+                          compte: comptePersonnes,
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.leaderboard),
+                  ),
+                ],
+              ),
+            ],
+            if (compteCinemas.isNotEmpty) ...[
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: ComposantTexte(
+                      texte:
+                          '${topCinemas.length > 1 ? 'Cinéma où tu vas le plus (ex æquo)' : 'Cinéma où tu vas le plus'} : ${topCinemas.join(', ')}',
+                      size: 18,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => ClassementPopUp(
+                          titre: 'Films vus par cinéma',
+                          compte: compteCinemas,
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.leaderboard),
+                  ),
+                ],
+              ),
+            ],
             SizedBox(height: 20),
             if (listeFilms.where((f) => f.date == null).isNotEmpty) ...[
               Center(

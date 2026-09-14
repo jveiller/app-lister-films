@@ -27,6 +27,8 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
   List<FilmsVu> _afficheFilmVu = [];
   List<String> _genres = [];
   List<String> _plateformes = [];
+  List<String> _personnes = [];
+  List<String> _cinemas = [];
   bool _initialise = false;
   final _searchController = TextEditingController();
   String tri = 'date';
@@ -50,6 +52,9 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
     String? contexte,
     bool? cinema,
     DateTime? date,
+    bool? accompagne,
+    List<String>? personnes,
+    List<String>? cinemas,
   }) async {
     int id = filmVuBox.get('id') ?? 1;
     var newFilm = FilmsVu(
@@ -67,6 +72,9 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
       contexte: contexte,
       date: date,
       cinema: cinema,
+      accompagne: accompagne,
+      personnes: personnes,
+      cinemas: cinemas,
     );
     //Fonction pour ajouter une élément dans la base de données
     //Si l'élément renvoyé par le champ nom du form n'est pas null
@@ -93,6 +101,9 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
     String? contexte,
     bool? cinema,
     DateTime? date,
+    bool? accompagne,
+    List<String>? personnes,
+    List<String>? cinemas,
   }) {
     setState(() {
       if (titre != null && titre != '') {
@@ -110,6 +121,9 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
       fv.setCinema(cinema);
       fv.setContexte(contexte);
       fv.setDate(date);
+      fv.setAccompagne(accompagne);
+      fv.setPersonnes(personnes);
+      fv.setCinemas(cinemas);
       DbFilmsVu.update(fv);
     });
     _fetchFilmVu();
@@ -229,6 +243,64 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
     });
   }
 
+  Future<void> addPersonne(String p) async {
+    if (!_personnes.contains(p) && p != '') {
+      setState(() {
+        _personnes.insert(0, p);
+      });
+      await filmVuBox.put('personnes', _personnes);
+      await loadPersonne();
+    }
+  }
+
+  Future<bool> deletePersonne(String p) async {
+    if (_personnes.length > 1) {
+      setState(() {
+        _personnes.remove(p);
+      });
+      await filmVuBox.put('personnes', _personnes);
+      await loadPersonne();
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> loadPersonne() async {
+    List<String>? p = filmVuBox.get('personnes');
+    setState(() {
+      _personnes = p ?? ['Maman'];
+    });
+  }
+
+  Future<void> addCinema(String c) async {
+    if (!_cinemas.contains(c) && c != '') {
+      setState(() {
+        _cinemas.insert(0, c);
+      });
+      await filmVuBox.put('cinemas', _cinemas);
+      await loadCinema();
+    }
+  }
+
+  Future<bool> deleteCinema(String c) async {
+    if (_cinemas.length > 1) {
+      setState(() {
+        _cinemas.remove(c);
+      });
+      await filmVuBox.put('cinemas', _cinemas);
+      await loadCinema();
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> loadCinema() async {
+    List<String>? c = filmVuBox.get('cinemas');
+    setState(() {
+      _cinemas = c ?? ['UGC'];
+    });
+  }
+
   void triDuree() {
     setState(() {
       tri = 'duree';
@@ -267,6 +339,8 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
     _fetchFilmVu();
     loadGenre();
     loadPlateforme();
+    loadPersonne();
+    loadCinema();
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -308,6 +382,12 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
                 listePlateformes: _plateformes,
                 addPlateformeFonction: addPlateforme,
                 supprPlateformeFonction: deletePlateforme,
+                listePersonnes: _personnes,
+                addPersonneFonction: addPersonne,
+                supprPersonneFonction: deletePersonne,
+                listeCinemas: _cinemas,
+                addCinemaFonction: addCinema,
+                supprCinemaFonction: deleteCinema,
               ),
             ),
             Container(
@@ -345,6 +425,12 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
                   listePlateformes: _plateformes,
                   addPlateformeFonction: addPlateforme,
                   supprPlateformeFonction: deletePlateforme,
+                  listePersonnes: _personnes,
+                  addPersonneFonction: addPersonne,
+                  supprPersonneFonction: deletePersonne,
+                  listeCinemas: _cinemas,
+                  addCinemaFonction: addCinema,
+                  supprCinemaFonction: deleteCinema,
                 ),
             ],
           ),
