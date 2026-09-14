@@ -10,6 +10,7 @@ class FilmsVoir {
   String? description;
   List<String>? acteurs;
   String? realisateur;
+  List<String>? recommandation;
 
   FilmsVoir({
     required this.titre,
@@ -21,6 +22,7 @@ class FilmsVoir {
     this.plateforme,
     this.acteurs,
     this.realisateur,
+    this.recommandation,
     required this.id,
   });
 
@@ -58,5 +60,9 @@ class FilmsVoir {
 
   void setRealisateur(String? r) {
     realisateur = r;
+  }
+
+  void setRecommandation(List<String>? r) {
+    recommandation = r;
   }
 }

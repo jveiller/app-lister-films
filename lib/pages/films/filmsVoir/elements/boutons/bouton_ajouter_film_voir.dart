@@ -12,6 +12,9 @@ class BoutonAjouterFilmVoir extends StatelessWidget {
   final List<String> listePlateformes;
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
+  final List<String> listeRecommandations;
+  final Function addRecommandationFonction;
+  final Function supprRecommandationFonction;
   const BoutonAjouterFilmVoir({
     super.key,
     required this.listeGenre,
@@ -22,6 +25,9 @@ class BoutonAjouterFilmVoir extends StatelessWidget {
     required this.listePlateformes,
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
+    required this.listeRecommandations,
+    required this.addRecommandationFonction,
+    required this.supprRecommandationFonction,
   });
 
   @override
@@ -41,6 +47,9 @@ class BoutonAjouterFilmVoir extends StatelessWidget {
               listePlateformes: listePlateformes,
               addPlateformeFonction: addPlateformeFonction,
               supprPlateformeFonction: supprPlateformeFonction,
+              listeRecommandations: listeRecommandations,
+              addRecommandationFonction: addRecommandationFonction,
+              supprRecommandationFonction: supprRecommandationFonction,
             );
           },
         );

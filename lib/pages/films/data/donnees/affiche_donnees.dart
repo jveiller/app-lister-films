@@ -1,4 +1,5 @@
 import 'package:culture_app1/commun/classes/class_films_vu.dart';
+import 'package:culture_app1/commun/classes/class_films_voir.dart';
 import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/pages/films/data/donnees/classement_pop_up.dart';
@@ -7,7 +8,12 @@ import 'package:flutter/material.dart';
 
 class AfficheDonnees extends StatelessWidget {
   final List<FilmsVu> listeFilms;
-  const AfficheDonnees({super.key, required this.listeFilms});
+  final List<FilmsVoir> listeFilmsVoir;
+  const AfficheDonnees({
+    super.key,
+    required this.listeFilms,
+    required this.listeFilmsVoir,
+  });
 
   int dureeTotale(List<FilmsVu> films) {
     int total = 0;
@@ -30,9 +36,9 @@ class AfficheDonnees extends StatelessWidget {
     return result;
   }
 
-  Map<String, int> compteOccurrences(
-    List<FilmsVu> films,
-    List<String>? Function(FilmsVu) getter,
+  Map<String, int> compteOccurrences<T>(
+    List<T> films,
+    List<String>? Function(T) getter,
   ) {
     Map<String, int> comptes = {};
     for (var film in films) {
@@ -61,6 +67,11 @@ class AfficheDonnees extends StatelessWidget {
     final topPersonnes = topOccurrences(comptePersonnes);
     final compteCinemas = compteOccurrences(listeFilms, (f) => f.cinemas);
     final topCinemas = topOccurrences(compteCinemas);
+    final compteRecommandations = compteOccurrences(
+      listeFilmsVoir,
+      (f) => f.recommandation,
+    );
+    final topRecommandations = topOccurrences(compteRecommandations);
     return SingleChildScrollView(
       child: SizedBox(
         width: double.infinity,
@@ -193,6 +204,34 @@ class AfficheDonnees extends StatelessWidget {
                         builder: (context) => ClassementPopUp(
                           titre: 'Films vus par cinéma',
                           compte: compteCinemas,
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.leaderboard),
+                  ),
+                ],
+              ),
+            ],
+            if (compteRecommandations.isNotEmpty) ...[
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: ComposantTexte(
+                      texte:
+                          '${topRecommandations.length > 1 ? 'Recommandé le plus par (ex æquo)' : 'Recommandé le plus par'} : ${topRecommandations.join(', ')}',
+                      size: 18,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => ClassementPopUp(
+                          titre: 'Films à voir recommandés par',
+                          compte: compteRecommandations,
                         ),
                       );
                     },

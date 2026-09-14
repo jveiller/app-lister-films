@@ -14,6 +14,9 @@ class FilmVoirCard extends StatefulWidget {
   final List<String> listePlateformes;
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
+  final List<String> listeRecommandations;
+  final Function addRecommandationFonction;
+  final Function supprRecommandationFonction;
   const FilmVoirCard({
     super.key,
     required this.fv,
@@ -25,6 +28,9 @@ class FilmVoirCard extends StatefulWidget {
     required this.listePlateformes,
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
+    required this.listeRecommandations,
+    required this.addRecommandationFonction,
+    required this.supprRecommandationFonction,
   });
 
   @override
@@ -49,6 +55,9 @@ class _FilmVoirCardState extends State<FilmVoirCard> {
               listePlateformes: widget.listePlateformes,
               addPlateformeFonction: widget.addPlateformeFonction,
               supprPlateformeFonction: widget.supprPlateformeFonction,
+              listeRecommandations: widget.listeRecommandations,
+              addRecommandationFonction: widget.addRecommandationFonction,
+              supprRecommandationFonction: widget.supprRecommandationFonction,
             );
           },
         );

@@ -1,11 +1,17 @@
 import 'package:culture_app1/commun/classes/class_films_vu.dart';
+import 'package:culture_app1/commun/classes/class_films_voir.dart';
 import 'package:culture_app1/pages/films/data/donnees/affiche_donnees.dart';
 import 'package:culture_app1/pages/films/data/menu_deroulant_data.dart';
 import 'package:flutter/material.dart';
 
 class PageDonnees extends StatefulWidget {
   final List<FilmsVu> listeFilmsVu;
-  const PageDonnees({super.key, required this.listeFilmsVu});
+  final List<FilmsVoir> listeFilmsVoir;
+  const PageDonnees({
+    super.key,
+    required this.listeFilmsVu,
+    required this.listeFilmsVoir,
+  });
 
   @override
   State<PageDonnees> createState() => _PageDonneesState();
@@ -164,7 +170,12 @@ class _PageDonneesState extends State<PageDonnees> {
           ),
         ],
         SizedBox(height: 10),
-        Expanded(child: AfficheDonnees(listeFilms: _filmsVu)),
+        Expanded(
+          child: AfficheDonnees(
+            listeFilms: _filmsVu,
+            listeFilmsVoir: widget.listeFilmsVoir,
+          ),
+        ),
       ],
     );
   }

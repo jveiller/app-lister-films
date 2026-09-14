@@ -19,12 +19,19 @@ class DbFilmsVoir {
     String path = join(await getDatabasesPath(), 'filmsVoir3.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       //Création de la table si nouvelle base de donnée
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE filmsVoir3 (id INTEGER PRIMARY KEY, titre TEXT, duree INTEGER, note DEC, genre TEXT, plateforme TEXT, annee INTEGER, description TEXT, acteurs TEXT,realisateur TEXT)',
+          'CREATE TABLE filmsVoir3 (id INTEGER PRIMARY KEY, titre TEXT, duree INTEGER, note DEC, genre TEXT, plateforme TEXT, annee INTEGER, description TEXT, acteurs TEXT,realisateur TEXT, recommandation TEXT)',
         );
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute(
+            "ALTER TABLE filmsVoir3 ADD COLUMN recommandation TEXT",
+          );
+        }
       },
     );
   }
@@ -50,6 +57,12 @@ class DbFilmsVoir {
     } else {
       plateformes = null;
     }
+    String? recommandation;
+    if (film.recommandation != null) {
+      recommandation = film.recommandation!.join(',');
+    } else {
+      recommandation = null;
+    }
     return await db.insert('filmsVoir3', {
       'titre': film.titre,
       'duree': film.duree,
@@ -60,6 +73,7 @@ class DbFilmsVoir {
       'description': film.description,
       'acteurs': acteurs,
       'realisateur': film.realisateur,
+      'recommandation': recommandation,
     });
   }
 
@@ -84,6 +98,12 @@ class DbFilmsVoir {
     } else {
       plateformes = null;
     }
+    String? recommandation;
+    if (fv.recommandation != null) {
+      recommandation = fv.recommandation!.join(',');
+    } else {
+      recommandation = null;
+    }
     return await db.update(
       'filmsVoir3',
       {
@@ -96,6 +116,7 @@ class DbFilmsVoir {
         'description': fv.description,
         'acteurs': acteurs,
         'realisateur': fv.realisateur,
+        'recommandation': recommandation,
       },
       where: 'id=?',
       whereArgs: [fv.id],
@@ -140,6 +161,9 @@ class DbFilmsVoir {
           realisateur: film['realisateur'] == null
               ? null
               : film['realisateur'] as String,
+          recommandation: film['recommandation'] == null
+              ? null
+              : (film['recommandation'] as String).split(','),
         ),
       );
     }

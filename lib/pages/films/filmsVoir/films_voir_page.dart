@@ -9,7 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 class FilmsVoirPage extends StatefulWidget {
-  const FilmsVoirPage({super.key});
+  final Function actualiseBDD;
+  final List<FilmsVoir> listeFV;
+  const FilmsVoirPage({
+    super.key,
+    required this.actualiseBDD,
+    required this.listeFV,
+  });
 
   @override
   State<FilmsVoirPage> createState() => _FilmsVoirPageState();
@@ -20,6 +26,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
   List<FilmsVoir> _afficheFilmVoir = [];
   List<String> _genres = [];
   List<String> _plateformes = [];
+  List<String> _recommandations = [];
   bool _initialise = false;
   final _searchController = TextEditingController();
   String tri = 'date';
@@ -35,6 +42,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
     double? note,
     List<String>? acteurs,
     String? realisateur,
+    List<String>? recommandation,
   }) async {
     int id = filmBox.get('id') ?? 1;
     var newFilm = FilmsVoir(
@@ -48,6 +56,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
       note: note,
       acteurs: acteurs,
       realisateur: realisateur,
+      recommandation: recommandation,
     );
     //Fonction pour ajouter une élément dans la base de données
     await DbFilmsVoir.insert(newFilm);
@@ -67,6 +76,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
     String? description,
     List<String>? acteurs,
     String? realisateur,
+    List<String>? recommandation,
   }) {
     setState(() {
       if (titre != null && titre != '') {
@@ -80,6 +90,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
       fv.setDescription(description);
       fv.setActeurs(acteurs);
       fv.setRealisateur(realisateur);
+      fv.setRecommandation(recommandation);
       DbFilmsVoir.update(fv);
     });
     _fetchFVoir();
@@ -100,6 +111,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
       _filmsVoir = List.from(
         data.reversed,
       ); // La variable _filmsVoir prend les valeurs de data
+      widget.actualiseBDD();
       if (!_initialise) {
         _afficheFilmVoir = _filmsVoir;
         _initialise = true;
@@ -200,6 +212,35 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
     });
   }
 
+  Future<void> addRecommandation(String r) async {
+    if (!_recommandations.contains(r) && r != '') {
+      setState(() {
+        _recommandations.insert(0, r);
+      });
+      await filmBox.put('recommandations', _recommandations);
+      await loadRecommandation();
+    }
+  }
+
+  Future<bool> deleteRecommandation(String r) async {
+    if (_recommandations.length > 1) {
+      setState(() {
+        _recommandations.remove(r);
+      });
+      await filmBox.put('recommandations', _recommandations);
+      await loadRecommandation();
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> loadRecommandation() async {
+    List<String>? r = filmBox.get('recommandations');
+    setState(() {
+      _recommandations = r ?? ['Ami·e'];
+    });
+  }
+
   void triDureeFV() {
     setState(() {
       tri = 'duree';
@@ -237,6 +278,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
     _fetchFVoir();
     loadGenre();
     loadPlateforme();
+    loadRecommandation();
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -278,6 +320,9 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
                 listePlateformes: _plateformes,
                 addPlateformeFonction: addPlateforme,
                 supprPlateformeFonction: deletePlateforme,
+                listeRecommandations: _recommandations,
+                addRecommandationFonction: addRecommandation,
+                supprRecommandationFonction: deleteRecommandation,
               ),
             ),
             Container(
@@ -315,6 +360,9 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
                   listePlateformes: _plateformes,
                   addPlateformeFonction: addPlateforme,
                   supprPlateformeFonction: deletePlateforme,
+                  listeRecommandations: _recommandations,
+                  addRecommandationFonction: addRecommandation,
+                  supprRecommandationFonction: deleteRecommandation,
                 ),
             ],
           ),

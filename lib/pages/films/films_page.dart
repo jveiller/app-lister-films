@@ -1,6 +1,8 @@
 import 'package:culture_app1/commun/app_bar.dart';
 import 'package:culture_app1/commun/classes/class_films_vu.dart';
+import 'package:culture_app1/commun/classes/class_films_voir.dart';
 import 'package:culture_app1/commun/couleur.dart';
+import 'package:culture_app1/commun/database/db_film_voir.dart';
 import 'package:culture_app1/commun/database/db_film_vu.dart';
 import 'package:culture_app1/commun/elements/selecteur.dart';
 import 'package:culture_app1/pages/films/data/data_film.dart';
@@ -18,6 +20,7 @@ class FilmPage extends StatefulWidget {
 class _FilmPageState extends State<FilmPage> {
   bool vu = false;
   List<FilmsVu> _filmsVu = [];
+  List<FilmsVoir> _filmsVoir = [];
 
   void _fetchFilmVu() async {
     // Actualise l'état de la BdD dans l'application
@@ -31,11 +34,20 @@ class _FilmPageState extends State<FilmPage> {
     });
   }
 
+  void _fetchFilmVoir() async {
+    // Actualise l'état de la BdD dans l'application
+    final data = await DbFilmsVoir.getList();
+    setState(() {
+      _filmsVoir = List.from(data.reversed);
+    });
+  }
+
   @override //à mettre avant les méthodes utilisant des instances
   void initState() {
     //Donne les valeurs initiales de la BdD à activites
     super.initState();
     _fetchFilmVu();
+    _fetchFilmVoir();
   }
 
   @override
@@ -47,7 +59,10 @@ class _FilmPageState extends State<FilmPage> {
           texteBar: 'FILMS',
           couleur: filmJaune,
           bouton: true,
-          pageBouton: DataFilm(listeFilmsVu: _filmsVu),
+          pageBouton: DataFilm(
+            listeFilmsVu: _filmsVu,
+            listeFilmsVoir: _filmsVoir,
+          ),
         ),
       ),
       body: Column(
@@ -75,7 +90,12 @@ class _FilmPageState extends State<FilmPage> {
               child: FilmsVuPage(actualiseBDD: _fetchFilmVu, listeFV: _filmsVu),
             ),
           ] else ...[
-            Expanded(child: FilmsVoirPage()),
+            Expanded(
+              child: FilmsVoirPage(
+                actualiseBDD: _fetchFilmVoir,
+                listeFV: _filmsVoir,
+              ),
+            ),
           ],
         ],
       ),

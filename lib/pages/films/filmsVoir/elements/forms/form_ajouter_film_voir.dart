@@ -20,6 +20,9 @@ class FormAjouterFilmVoir extends StatefulWidget {
   final Function supprPlateformeFonction;
   final Function setFilmState;
   final Function addFilmFonction;
+  final List<String> listeRecommandations;
+  final Function addRecommandationFonction;
+  final Function supprRecommandationFonction;
   const FormAjouterFilmVoir({
     super.key,
     required this.listeGenres,
@@ -30,6 +33,9 @@ class FormAjouterFilmVoir extends StatefulWidget {
     required this.supprPlateformeFonction,
     required this.setFilmState,
     required this.addFilmFonction,
+    required this.listeRecommandations,
+    required this.addRecommandationFonction,
+    required this.supprRecommandationFonction,
   });
 
   @override
@@ -41,6 +47,7 @@ class _FormAjouterFilmVoirState extends State<FormAjouterFilmVoir> {
   //String genreController = '';
   List<String> genres = [];
   List<String> plateformes = [];
+  List<String> recommandations = [];
   final heureController = TextEditingController();
   final minuteController = TextEditingController();
   final noteController = TextEditingController();
@@ -98,6 +105,20 @@ class _FormAjouterFilmVoirState extends State<FormAjouterFilmVoir> {
   void supprPlateforme(String p) {
     setState(() {
       plateformes.remove(p);
+    });
+  }
+
+  void addRecommandation(String r) {
+    if (!recommandations.contains(r)) {
+      setState(() {
+        recommandations.add(r);
+      });
+    }
+  }
+
+  void supprRecommandation(String r) {
+    setState(() {
+      recommandations.remove(r);
     });
   }
 
@@ -215,6 +236,21 @@ class _FormAjouterFilmVoirState extends State<FormAjouterFilmVoir> {
                   ),
                   Container(
                     margin: EdgeInsets.all(5),
+                    child: ChampListeDeroulant(
+                      txt: 'Recommandé par',
+                      liste: recommandations,
+                      listeDeroulant: widget.listeRecommandations,
+                      addDeroulantFonction: widget.addRecommandationFonction,
+                      supprDeroulantFonction:
+                          widget.supprRecommandationFonction,
+                      addListeFonction: addRecommandation,
+                      supprListeFonction: supprRecommandation,
+                      apresAjoutez: 'une recommandation',
+                      txtFeminin: true,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(5),
                     child: ChampNombre(
                       txt: 'Année de sortie',
                       champController: anneeController,
@@ -269,6 +305,9 @@ class _FormAjouterFilmVoirState extends State<FormAjouterFilmVoir> {
                       realisateur: realisateurController.text == ''
                           ? null
                           : realisateurController.text,
+                      recommandation: recommandations.isEmpty
+                          ? null
+                          : recommandations,
                     );
                   });
                   Navigator.pop(context);

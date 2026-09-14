@@ -16,6 +16,9 @@ class FilmVoirPopUp extends StatefulWidget {
   final Function addGenreFonction;
   final Function supprGenreFonction;
   final Function modifFilmFonction;
+  final List<String> listeRecommandations;
+  final Function addRecommandationFonction;
+  final Function supprRecommandationFonction;
   const FilmVoirPopUp({
     super.key,
     required this.fv,
@@ -27,6 +30,9 @@ class FilmVoirPopUp extends StatefulWidget {
     required this.modifFilmFonction,
     required this.addGenreFonction,
     required this.supprGenreFonction,
+    required this.listeRecommandations,
+    required this.addRecommandationFonction,
+    required this.supprRecommandationFonction,
   });
 
   @override
@@ -149,6 +155,21 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                   ],
                 ),
               ],
+              if (widget.fv.recommandation != null) ...[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ComposantTexte(
+                      texte: 'Recommandé par',
+                      weight: FontWeight.bold,
+                    ),
+                    ComposantTexte(
+                      texte: widget.fv.recommandation!.join('/'),
+                      alignment: TextAlign.start,
+                    ),
+                  ],
+                ),
+              ],
               if (widget.fv.description != '' &&
                   widget.fv.description != null) ...[
                 Column(
@@ -200,6 +221,12 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                                       widget.supprPlateformeFonction,
                                   setFilmState: setStateDialog3,
                                   modifFonction: widget.modifFilmFonction,
+                                  listeRecommandations:
+                                      widget.listeRecommandations,
+                                  addRecommandationFonction:
+                                      widget.addRecommandationFonction,
+                                  supprRecommandationFonction:
+                                      widget.supprRecommandationFonction,
                                 );
                               },
                             );

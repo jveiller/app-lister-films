@@ -22,6 +22,9 @@ class FormModifFilmVoir extends StatefulWidget {
   final Function supprPlateformeFonction;
   final Function setFilmState;
   final Function modifFonction;
+  final List<String> listeRecommandations;
+  final Function addRecommandationFonction;
+  final Function supprRecommandationFonction;
   const FormModifFilmVoir({
     super.key,
     required this.fv,
@@ -33,6 +36,9 @@ class FormModifFilmVoir extends StatefulWidget {
     required this.supprPlateformeFonction,
     required this.setFilmState,
     required this.modifFonction,
+    required this.listeRecommandations,
+    required this.addRecommandationFonction,
+    required this.supprRecommandationFonction,
   });
 
   @override
@@ -44,6 +50,7 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
   //late String genreController;
   late List<String> genres;
   late List<String> plateformes;
+  late List<String> recommandations;
   late TextEditingController heureController;
   late TextEditingController minuteController;
   late TextEditingController noteController;
@@ -106,6 +113,20 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
     });
   }
 
+  void addRecommandation(String r) {
+    if (!recommandations.contains(r)) {
+      setState(() {
+        recommandations.add(r);
+      });
+    }
+  }
+
+  void supprRecommandation(String r) {
+    setState(() {
+      recommandations.remove(r);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -129,6 +150,7 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
     plateformes = widget.fv.plateforme ?? [];
     //supprGenreController = widget.listeGenres.first;
     listeActeurs = widget.fv.acteurs ?? [];
+    recommandations = widget.fv.recommandation ?? [];
   }
 
   @override
@@ -239,6 +261,21 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
                   ),
                   Container(
                     margin: EdgeInsets.all(5),
+                    child: ChampListeDeroulant(
+                      txt: 'Recommandé par',
+                      liste: recommandations,
+                      listeDeroulant: widget.listeRecommandations,
+                      addDeroulantFonction: widget.addRecommandationFonction,
+                      supprDeroulantFonction:
+                          widget.supprRecommandationFonction,
+                      addListeFonction: addRecommandation,
+                      supprListeFonction: supprRecommandation,
+                      apresAjoutez: 'une recommandation',
+                      txtFeminin: true,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(5),
                     child: ChampNombre(
                       txt: 'Année de sortie',
                       champController: anneeController,
@@ -294,6 +331,9 @@ class _FormModifFilmVoirState extends State<FormModifFilmVoir> {
                       realisateur: realisateurController.text == ''
                           ? null
                           : realisateurController.text,
+                      recommandation: recommandations.isEmpty
+                          ? null
+                          : recommandations,
                     );
                   });
                   Navigator.pop(context);

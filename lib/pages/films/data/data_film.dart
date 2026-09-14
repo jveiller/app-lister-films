@@ -1,5 +1,6 @@
 import 'package:culture_app1/commun/app_bar.dart';
 import 'package:culture_app1/commun/classes/class_films_vu.dart';
+import 'package:culture_app1/commun/classes/class_films_voir.dart';
 import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/couleur.dart';
 import 'package:culture_app1/pages/films/data/donnees/page_donnees.dart';
@@ -8,7 +9,12 @@ import 'package:flutter/material.dart';
 
 class DataFilm extends StatefulWidget {
   final List<FilmsVu> listeFilmsVu;
-  const DataFilm({super.key, required this.listeFilmsVu});
+  final List<FilmsVoir> listeFilmsVoir;
+  const DataFilm({
+    super.key,
+    required this.listeFilmsVu,
+    required this.listeFilmsVoir,
+  });
 
   @override
   State<DataFilm> createState() => _DataFilmState();
@@ -40,7 +46,10 @@ class _DataFilmState extends State<DataFilm> {
                 });
               },
               children: [
-                PageDonnees(listeFilmsVu: widget.listeFilmsVu),
+                PageDonnees(
+                  listeFilmsVu: widget.listeFilmsVu,
+                  listeFilmsVoir: widget.listeFilmsVoir,
+                ),
                 PageTop(listeFilmsVu: widget.listeFilmsVu),
               ],
             ),
