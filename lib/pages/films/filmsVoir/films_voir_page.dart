@@ -102,6 +102,21 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
     _fetchFVoir();
   }
 
+  List<FilmsVoir> _filtrerRecherche(List<FilmsVoir> films) {
+    if (_searchController.text == '') return films;
+    final q = _searchController.text.toLowerCase();
+    return films
+        .where(
+          (fv) =>
+              fv.titre.toLowerCase().contains(q) ||
+              ((fv.genre ?? []).join(',')).toLowerCase().contains(q) ||
+              (fv.realisateur ?? '').toLowerCase().contains(q) ||
+              ((fv.acteurs ?? []).join(',')).toLowerCase().contains(q) ||
+              ((fv.plateforme ?? []).join(',')).toLowerCase().contains(q),
+        )
+        .toList();
+  }
+
   void _fetchFVoir() async {
     // Actualise l'état de la BdD dans l'application
     final data =
@@ -116,30 +131,6 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
         _afficheFilmVoir = _filmsVoir;
         _initialise = true;
       } else {
-        List<FilmsVoir> listeModif = [];
-        if (_searchController.text != '') {
-          for (FilmsVoir fv in _filmsVoir) {
-            if (fv.titre.toLowerCase().contains(
-                  _searchController.text.toLowerCase(),
-                ) ||
-                ((fv.genre ?? []).join(',')).toLowerCase().contains(
-                  _searchController.text.toLowerCase(),
-                ) ||
-                (fv.realisateur ?? '').toLowerCase().contains(
-                  _searchController.text.toLowerCase(),
-                ) ||
-                ((fv.acteurs ?? []).join(',')).toLowerCase().contains(
-                  _searchController.text.toLowerCase(),
-                ) ||
-                ((fv.plateforme ?? []).join(',')).toLowerCase().contains(
-                  _searchController.text.toLowerCase(),
-                )) {
-              listeModif.add(fv);
-            }
-          }
-        } else {
-          listeModif = _filmsVoir;
-        }
         if (tri == 'date') {
           triAjoutFV();
         } else if (tri == 'duree') {
@@ -147,9 +138,6 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
         } else if (tri == 'note') {
           triNoteFV();
         }
-        setState(() {
-          _afficheFilmVoir = listeModif;
-        });
       }
     });
   }
@@ -249,6 +237,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
           b.duree ?? double.maxFinite.toInt(),
         ),
       );
+      _afficheFilmVoir = _filtrerRecherche(_filmsVoir);
     });
   }
 
@@ -256,6 +245,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
     setState(() {
       tri = 'note';
       _filmsVoir.sort((a, b) => (b.note ?? 0).compareTo(a.note ?? 0));
+      _afficheFilmVoir = _filtrerRecherche(_filmsVoir);
     });
   }
 
@@ -263,6 +253,7 @@ class _FilmsVoirPageState extends State<FilmsVoirPage> {
     setState(() {
       tri = 'date';
       _filmsVoir.sort((a, b) => (b.id).compareTo(a.id));
+      _afficheFilmVoir = _filtrerRecherche(_filmsVoir);
     });
   }
 
