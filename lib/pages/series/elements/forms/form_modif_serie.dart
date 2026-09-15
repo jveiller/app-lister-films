@@ -3,6 +3,7 @@ import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/commun/couleur.dart';
 import 'package:culture_app1/commun/database/db_suggestions.dart';
+import 'package:culture_app1/commun/elements/form/champs/champ_date.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_liste.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_liste_deroulant.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_nombre.dart';
@@ -74,6 +75,16 @@ class _FormModifSerieState extends State<FormModifSerie> {
   late List<String> recommandePar;
   late List<String> listeActeurs;
   late List<String> listeCitations;
+  DateTime? dateDebutController;
+  DateTime? dateFinController;
+
+  void changeDateDebut(DateTime? value) {
+    setState(() => dateDebutController = value);
+  }
+
+  void changeDateFin(DateTime? value) {
+    setState(() => dateFinController = value);
+  }
 
   void addGenre(String g) {
     if (!genres.contains(g)) setState(() => genres.add(g));
@@ -139,13 +150,12 @@ class _FormModifSerieState extends State<FormModifSerie> {
     recommandePar = widget.serie.recommandePar ?? [];
     listeActeurs = widget.serie.acteurs ?? [];
     listeCitations = widget.serie.citations ?? [];
+    dateDebutController = widget.serie.dateDebut;
+    dateFinController = widget.serie.dateFin;
   }
 
   @override
   Widget build(BuildContext context) {
-    final labelNote = widget.serie.statut == 'vu'
-        ? 'Note'
-        : 'Envie de voir';
     return StatefulBuilder(
       builder: (context, setState) {
         return AlertDialog(
@@ -200,8 +210,24 @@ class _FormModifSerieState extends State<FormModifSerie> {
                   Container(
                     margin: EdgeInsets.all(5),
                     child: ChampNote(
-                      txt: labelNote,
+                      txt: 'Note',
                       champController: noteController,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ChampDate(
+                      txt: 'Date de début',
+                      changeDate: changeDateDebut,
+                      date: dateDebutController,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ChampDate(
+                      txt: 'Date de fin',
+                      changeDate: changeDateFin,
+                      date: dateFinController,
                     ),
                   ),
                   Container(
@@ -358,6 +384,8 @@ class _FormModifSerieState extends State<FormModifSerie> {
                           ? null
                           : listeCitations,
                       note: double.tryParse(noteController.text),
+                      dateDebut: dateDebutController,
+                      dateFin: dateFinController,
                     );
                   });
                   Navigator.pop(context);

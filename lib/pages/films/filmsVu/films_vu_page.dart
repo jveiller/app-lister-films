@@ -324,7 +324,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
   Future<void> loadCinema() async {
     List<String>? c = filmVuBox.get('cinemas');
     setState(() {
-      _cinemas = c ?? ['UGC'];
+      _cinemas = c ?? ["L'Arvor"];
     });
   }
 

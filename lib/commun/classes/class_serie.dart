@@ -6,6 +6,7 @@ class Episode {
   double? note;
   String? description;
   List<String>? avecQui;
+  DateTime? dateVisionnage;
 
   Episode({
     required this.numero,
@@ -15,6 +16,7 @@ class Episode {
     this.note,
     this.description,
     this.avecQui,
+    this.dateVisionnage,
   });
 
   void setTitre(String? t) => titre = t;
@@ -23,6 +25,7 @@ class Episode {
   void setNote(double? n) => note = n;
   void setDescription(String? d) => description = d;
   void setAvecQui(List<String>? a) => avecQui = a;
+  void setDateVisionnage(DateTime? d) => dateVisionnage = d;
 
   Map<String, dynamic> toMap() => {
     'numero': numero,
@@ -32,6 +35,7 @@ class Episode {
     'note': note,
     'description': description,
     'avecQui': avecQui,
+    'dateVisionnage': dateVisionnage?.toIso8601String(),
   };
 
   factory Episode.fromMap(Map<String, dynamic> map) => Episode(
@@ -44,6 +48,9 @@ class Episode {
     avecQui: map['avecQui'] == null
         ? null
         : List<String>.from(map['avecQui'] as List),
+    dateVisionnage: map['dateVisionnage'] == null
+        ? null
+        : DateTime.parse(map['dateVisionnage'] as String),
   );
 }
 
@@ -53,6 +60,12 @@ class Saison {
   double? note;
   String? commentaire;
   List<Episode> episodes;
+  DateTime? dateDebut;
+  DateTime? dateFin;
+  // Vrai quand "Ma position" a marqué la saison comme entièrement vue alors
+  // que son nombre d'épisodes n'est pas défini (donc sans épisodes à cocher
+  // individuellement).
+  bool completeManuelle;
 
   Saison({
     required this.numero,
@@ -60,6 +73,9 @@ class Saison {
     this.note,
     this.commentaire,
     List<Episode>? episodes,
+    this.dateDebut,
+    this.dateFin,
+    this.completeManuelle = false,
   }) : episodes = episodes ?? [];
 
   // Ajuste le nombre d'épisodes : ajoute des épisodes vides ou retire les
@@ -67,6 +83,7 @@ class Saison {
   void setNbEpisodes(int? n) {
     nbEpisodes = n;
     if (n == null) return;
+    completeManuelle = false;
     if (episodes.length > n) {
       episodes = episodes.sublist(0, n);
     } else {
@@ -78,10 +95,32 @@ class Saison {
 
   void setNote(double? n) => note = n;
   void setCommentaire(String? c) => commentaire = c;
+  void setDateDebut(DateTime? d) => dateDebut = d;
+  void setDateFin(DateTime? d) => dateFin = d;
 
   bool get definie => nbEpisodes != null && episodes.isNotEmpty;
-  bool get complete => definie && episodes.every((e) => e.vu);
-  bool get enCours => definie && episodes.any((e) => e.vu) && !complete;
+  bool get complete =>
+      completeManuelle || (definie && episodes.every((e) => e.vu));
+  bool get enCours => !complete && definie && episodes.any((e) => e.vu);
+
+  // Date de début/fin de la saison : la date saisie manuellement si elle
+  // existe, sinon la plus ancienne/récente date de visionnage parmi ses
+  // épisodes.
+  DateTime? get dateDebutEffective {
+    if (dateDebut != null) return dateDebut;
+    final dates =
+        episodes.map((e) => e.dateVisionnage).whereType<DateTime>().toList()
+          ..sort();
+    return dates.isEmpty ? null : dates.first;
+  }
+
+  DateTime? get dateFinEffective {
+    if (dateFin != null) return dateFin;
+    final dates =
+        episodes.map((e) => e.dateVisionnage).whereType<DateTime>().toList()
+          ..sort();
+    return dates.isEmpty ? null : dates.last;
+  }
 
   Map<String, dynamic> toMap() => {
     'numero': numero,
@@ -89,6 +128,9 @@ class Saison {
     'note': note,
     'commentaire': commentaire,
     'episodes': episodes.map((e) => e.toMap()).toList(),
+    'completeManuelle': completeManuelle,
+    'dateDebut': dateDebut?.toIso8601String(),
+    'dateFin': dateFin?.toIso8601String(),
   };
 
   factory Saison.fromMap(Map<String, dynamic> map) => Saison(
@@ -101,6 +143,13 @@ class Saison {
         : (map['episodes'] as List)
               .map((e) => Episode.fromMap(Map<String, dynamic>.from(e as Map)))
               .toList(),
+    completeManuelle: map['completeManuelle'] as bool? ?? false,
+    dateDebut: map['dateDebut'] == null
+        ? null
+        : DateTime.parse(map['dateDebut'] as String),
+    dateFin: map['dateFin'] == null
+        ? null
+        : DateTime.parse(map['dateFin'] as String),
   );
 }
 
@@ -120,6 +169,8 @@ class Serie {
   int? nbEpisodesMoyen;
   int? dureeMoyenneEpisode;
   double? note;
+  DateTime? dateDebut;
+  DateTime? dateFin;
   List<Saison> saisons;
 
   Serie({
@@ -138,6 +189,8 @@ class Serie {
     this.nbEpisodesMoyen,
     this.dureeMoyenneEpisode,
     this.note,
+    this.dateDebut,
+    this.dateFin,
     List<Saison>? saisons,
   }) : saisons = saisons ?? [];
 
@@ -154,6 +207,8 @@ class Serie {
   void setNbEpisodesMoyen(int? n) => nbEpisodesMoyen = n;
   void setDureeMoyenneEpisode(int? d) => dureeMoyenneEpisode = d;
   void setNote(double? n) => note = n;
+  void setDateDebut(DateTime? d) => dateDebut = d;
+  void setDateFin(DateTime? d) => dateFin = d;
 
   // Ajuste le nombre de saisons : ajoute des saisons vides ou retire les
   // dernières, en conservant les données des saisons déjà définies.
@@ -172,6 +227,25 @@ class Serie {
   List<Episode> get tousLesEpisodes =>
       saisons.expand((s) => s.episodes).toList();
 
+  // Date de début/fin de la série : la date saisie manuellement si elle
+  // existe, sinon la plus ancienne/récente date effective (elle-même
+  // éventuellement dérivée des épisodes) parmi ses saisons.
+  DateTime? get dateDebutEffective {
+    if (dateDebut != null) return dateDebut;
+    final dates =
+        saisons.map((s) => s.dateDebutEffective).whereType<DateTime>().toList()
+          ..sort();
+    return dates.isEmpty ? null : dates.first;
+  }
+
+  DateTime? get dateFinEffective {
+    if (dateFin != null) return dateFin;
+    final dates =
+        saisons.map((s) => s.dateFinEffective).whereType<DateTime>().toList()
+          ..sort();
+    return dates.isEmpty ? null : dates.last;
+  }
+
   // Statut calculé à partir de la progression réelle plutôt que stocké, pour
   // qu'il ne puisse jamais se désynchroniser des épisodes cochés.
   String get statut {
@@ -183,5 +257,58 @@ class Serie {
     if (episodes.isEmpty || episodes.every((e) => !e.vu)) return 'a_voir';
     if (saisonsCompletes && episodes.every((e) => e.vu)) return 'vu';
     return 'en_cours';
+  }
+
+  // Estime le nombre total d'épisodes et leur durée moyenne : pour chaque
+  // saison, utilise son vrai nombre d'épisodes s'il est défini, sinon le
+  // nombre moyen d'épisodes par saison de la série ; pour chaque épisode,
+  // utilise sa vraie durée si elle est définie, sinon la durée moyenne d'un
+  // épisode. Retourne null si une donnée nécessaire au calcul manque.
+  ({int nbEpisodes, int dureeMoyenne})? get estimationEpisodes {
+    if (nbSaisons == null) return null;
+    int totalEpisodes = 0;
+    int totalMinutes = 0;
+    for (var numero = 1; numero <= nbSaisons!; numero++) {
+      Saison? saison;
+      for (var s in saisons) {
+        if (s.numero == numero) {
+          saison = s;
+          break;
+        }
+      }
+      if (saison != null && saison.nbEpisodes != null) {
+        totalEpisodes += saison.nbEpisodes!;
+        for (var e in saison.episodes) {
+          final duree = e.duree ?? dureeMoyenneEpisode;
+          if (duree == null) return null;
+          totalMinutes += duree;
+        }
+      } else {
+        if (nbEpisodesMoyen == null || dureeMoyenneEpisode == null) {
+          return null;
+        }
+        totalEpisodes += nbEpisodesMoyen!;
+        totalMinutes += nbEpisodesMoyen! * dureeMoyenneEpisode!;
+      }
+    }
+    if (totalEpisodes == 0) return null;
+    return (
+      nbEpisodes: totalEpisodes,
+      dureeMoyenne: (totalMinutes / totalEpisodes).round(),
+    );
+  }
+
+  // Temps total (en minutes) déjà passé à regarder cette série : somme des
+  // épisodes marqués vus, en utilisant leur vraie durée si elle est définie,
+  // sinon la durée moyenne d'un épisode de la série. Retourne null si un
+  // épisode vu n'a ni durée propre ni durée moyenne pour la compenser.
+  int? get dureeVisionneeMinutes {
+    int total = 0;
+    for (var e in tousLesEpisodes.where((e) => e.vu)) {
+      final duree = e.duree ?? dureeMoyenneEpisode;
+      if (duree == null) return null;
+      total += duree;
+    }
+    return total;
   }
 }

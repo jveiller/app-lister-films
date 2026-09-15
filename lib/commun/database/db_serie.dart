@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:culture_app1/commun/classes/class_serie.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -19,11 +20,17 @@ class DbSerie {
     String path = join(await getDatabasesPath(), 'series1.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE series1 (id INTEGER PRIMARY KEY, titre TEXT, genre TEXT, plateforme TEXT, annee INTEGER, createur TEXT, acteurs TEXT, description TEXT, avecQui TEXT, recommandePar TEXT, citations TEXT, nbSaisons INTEGER, nbEpisodesMoyen INTEGER, dureeMoyenneEpisode INTEGER, note DEC, saisons TEXT)',
+          'CREATE TABLE series1 (id INTEGER PRIMARY KEY, titre TEXT, genre TEXT, plateforme TEXT, annee INTEGER, createur TEXT, acteurs TEXT, description TEXT, avecQui TEXT, recommandePar TEXT, citations TEXT, nbSaisons INTEGER, nbEpisodesMoyen INTEGER, dureeMoyenneEpisode INTEGER, note DEC, dateDebut TEXT, dateFin TEXT, saisons TEXT)',
         );
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute("ALTER TABLE series1 ADD COLUMN dateDebut TEXT");
+          await db.execute("ALTER TABLE series1 ADD COLUMN dateFin TEXT");
+        }
       },
     );
   }
@@ -44,6 +51,12 @@ class DbSerie {
       'nbEpisodesMoyen': serie.nbEpisodesMoyen,
       'dureeMoyenneEpisode': serie.dureeMoyenneEpisode,
       'note': serie.note,
+      'dateDebut': serie.dateDebut == null
+          ? null
+          : DateFormat("dd/MM/yyyy").format(serie.dateDebut!),
+      'dateFin': serie.dateFin == null
+          ? null
+          : DateFormat("dd/MM/yyyy").format(serie.dateFin!),
       'saisons': jsonEncode(serie.saisons.map((s) => s.toMap()).toList()),
     };
   }
@@ -110,6 +123,12 @@ class DbSerie {
               : s['note'] is int
               ? (s['note'] as int).toDouble()
               : s['note'] as double,
+          dateDebut: s['dateDebut'] == null
+              ? null
+              : DateFormat("dd/MM/yyyy").parse(s['dateDebut'] as String),
+          dateFin: s['dateFin'] == null
+              ? null
+              : DateFormat("dd/MM/yyyy").parse(s['dateFin'] as String),
           saisons: s['saisons'] == null
               ? []
               : (jsonDecode(s['saisons'] as String) as List)

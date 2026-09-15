@@ -5,6 +5,7 @@ import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/commun/couleur.dart';
 import 'package:culture_app1/commun/database/db_serie.dart';
 import 'package:culture_app1/pages/films/bouton_trier_film.dart';
+import 'package:culture_app1/pages/series/data/data_serie.dart';
 import 'package:culture_app1/pages/series/elements/boutons/bouton_ajouter_serie.dart';
 import 'package:culture_app1/pages/series/elements/selecteur3.dart';
 import 'package:culture_app1/pages/series/elements/serie_card.dart';
@@ -46,6 +47,8 @@ class _SeriePageState extends State<SeriePage> {
     int? nbEpisodesMoyen,
     int? dureeMoyenneEpisode,
     double? note,
+    DateTime? dateDebut,
+    DateTime? dateFin,
   }) async {
     int id = serieBox.get('id') ?? 1;
     var nouvelleSerie = Serie(
@@ -63,6 +66,8 @@ class _SeriePageState extends State<SeriePage> {
       nbEpisodesMoyen: nbEpisodesMoyen,
       dureeMoyenneEpisode: dureeMoyenneEpisode,
       note: note,
+      dateDebut: dateDebut,
+      dateFin: dateFin,
     );
     nouvelleSerie.setNbSaisons(nbSaisons);
     await DbSerie.insert(nouvelleSerie);
@@ -87,6 +92,8 @@ class _SeriePageState extends State<SeriePage> {
     int? nbEpisodesMoyen,
     int? dureeMoyenneEpisode,
     double? note,
+    DateTime? dateDebut,
+    DateTime? dateFin,
   }) {
     setState(() {
       if (titre != null && titre != '') {
@@ -105,6 +112,8 @@ class _SeriePageState extends State<SeriePage> {
       serie.setDureeMoyenneEpisode(dureeMoyenneEpisode);
       serie.setNote(note);
       serie.setNbSaisons(nbSaisons);
+      serie.setDateDebut(dateDebut);
+      serie.setDateFin(dateFin);
       DbSerie.update(serie);
     });
     _fetchSeries();
@@ -133,6 +142,11 @@ class _SeriePageState extends State<SeriePage> {
     await sauvegarderSerie(serie, etaitVuAvant: etaitVuAvant);
   }
 
+  // Marque toutes les saisons/épisodes avant la position choisie comme vus.
+  // Une saison antérieure dont le nombre d'épisodes n'est pas défini est
+  // simplement marquée complète (pas d'épisodes à cocher individuellement) ;
+  // la saison de la position, elle, se voit définir ce nombre d'épisodes si
+  // besoin, pour que "épisode 6" y crée bien 6 épisodes vus.
   Future<void> definirPosition(
     Serie serie,
     int saisonNumero,
@@ -140,11 +154,27 @@ class _SeriePageState extends State<SeriePage> {
   ) async {
     final etaitVuAvant = serie.statut == 'vu';
     for (var s in serie.saisons) {
-      for (var e in s.episodes) {
-        e.setVu(
-          s.numero < saisonNumero ||
-              (s.numero == saisonNumero && e.numero <= episodeNumero),
-        );
+      if (s.numero < saisonNumero) {
+        if (s.definie) {
+          for (var e in s.episodes) {
+            e.setVu(true);
+          }
+        } else {
+          s.completeManuelle = true;
+        }
+      } else if (s.numero == saisonNumero) {
+        s.completeManuelle = false;
+        if (!s.definie) {
+          s.setNbEpisodes(episodeNumero);
+        }
+        for (var e in s.episodes) {
+          e.setVu(e.numero <= episodeNumero);
+        }
+      } else {
+        s.completeManuelle = false;
+        for (var e in s.episodes) {
+          e.setVu(false);
+        }
       }
     }
     await sauvegarderSerie(serie, etaitVuAvant: etaitVuAvant);
@@ -369,7 +399,12 @@ class _SeriePageState extends State<SeriePage> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
-        child: AppBarCommune(texteBar: 'SÉRIES', couleur: serieOrange),
+        child: AppBarCommune(
+          texteBar: 'SÉRIES',
+          couleur: serieOrange,
+          bouton: true,
+          pageBouton: DataSerie(listeSeries: _series),
+        ),
       ),
       body: Column(
         children: [

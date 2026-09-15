@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 class ClassementPopUp extends StatelessWidget {
   final String titre;
   final Map<String, int> compte;
+  final Color couleur;
   const ClassementPopUp({
     super.key,
     required this.titre,
     required this.compte,
+    this.couleur = filmJaune,
   });
 
   @override
@@ -42,7 +44,7 @@ class ClassementPopUp extends StatelessWidget {
                     margin: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(360),
-                      color: filmJaune,
+                      color: couleur,
                     ),
                     child: Center(
                       child: ComposantTexte(

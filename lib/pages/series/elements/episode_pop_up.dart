@@ -1,13 +1,9 @@
 import 'package:culture_app1/commun/classes/class_serie.dart';
-import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
-import 'package:culture_app1/commun/couleur.dart';
-import 'package:culture_app1/commun/elements/form/champs/champ_liste_deroulant.dart';
-import 'package:culture_app1/commun/elements/form/champs/champ_note.dart';
-import 'package:culture_app1/commun/elements/form/champs/champ_nombre.dart';
-import 'package:culture_app1/commun/elements/form/champs/champ_texte.dart';
-import 'package:culture_app1/commun/elements/form/entete_form.dart';
+import 'package:culture_app1/commun/elements/boutons/bouton_annuler.dart';
+import 'package:culture_app1/pages/series/elements/forms/form_modif_episode.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class EpisodePopUp extends StatefulWidget {
   final Serie serie;
@@ -33,155 +29,136 @@ class EpisodePopUp extends StatefulWidget {
 }
 
 class _EpisodePopUpState extends State<EpisodePopUp> {
-  late TextEditingController titreController;
-  late TextEditingController dureeController;
-  late TextEditingController noteController;
-  late TextEditingController descriptionController;
-  late List<String> avecQui;
-  late bool vu;
-
-  void addAvecQui(String p) {
-    if (!avecQui.contains(p)) {
-      setState(() {
-        avecQui.add(p);
-      });
-    }
-  }
-
-  void supprAvecQui(String p) {
-    setState(() {
-      avecQui.remove(p);
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    titreController = TextEditingController(text: widget.episode.titre);
-    dureeController = TextEditingController(
-      text: widget.episode.duree?.toString(),
-    );
-    noteController = TextEditingController(
-      text: widget.episode.note?.toString(),
-    );
-    descriptionController = TextEditingController(
-      text: widget.episode.description,
-    );
-    avecQui = widget.episode.avecQui ?? [];
-    vu = widget.episode.vu;
-  }
-
   @override
   Widget build(BuildContext context) {
     return StatefulBuilder(
       builder: (context, setStateDialog) {
+        final episode = widget.episode;
         return AlertDialog(
-          contentPadding: EdgeInsets.symmetric(horizontal: 10),
           scrollable: true,
-          backgroundColor: Colors.white,
-          title: EnteteForm(
-            couleur: serieOrange,
-            txt: 'Épisode ${widget.episode.numero}',
+          insetPadding: EdgeInsets.all(10),
+          actionsPadding: EdgeInsets.only(right: 10, left: 10, bottom: 15),
+          title: ComposantTexte(
+            texte: 'Épisode ${episode.numero}',
+            size: 22,
+            weight: FontWeight.bold,
           ),
           content: Column(
+            spacing: 8,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                margin: EdgeInsets.all(5),
-                child: ChampTexte(
-                  txt: 'Titre de l\'épisode',
-                  champController: titreController,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.all(5),
-                child: Row(
+              if (episode.titre != null && episode.titre != '') ...[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ComposantTexte(texte: 'Vu', weight: FontWeight.bold),
-                    Switch(
-                      value: vu,
-                      activeColor: serieOrange,
-                      onChanged: (v) => setStateDialog(() => vu = v),
+                    ComposantTexte(texte: 'Titre', weight: FontWeight.bold),
+                    ComposantTexte(
+                      texte: episode.titre!,
+                      alignment: TextAlign.start,
                     ),
                   ],
                 ),
+              ],
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ComposantTexte(texte: 'Vu', weight: FontWeight.bold),
+                  ComposantTexte(texte: episode.vu ? 'Oui' : 'Non'),
+                ],
               ),
-              Container(
-                margin: EdgeInsets.all(5),
-                child: ChampListeDeroulant(
-                  txt: 'Avec qui',
-                  liste: avecQui,
-                  listeDeroulant: widget.listeAvecQui,
-                  addDeroulantFonction: widget.addAvecQuiFonction,
-                  supprDeroulantFonction: widget.supprAvecQuiFonction,
-                  selectionnerDeroulantFonction:
-                      widget.selectionnerAvecQuiFonction,
-                  addListeFonction: addAvecQui,
-                  supprListeFonction: supprAvecQui,
-                  apresAjoutez: 'une personne',
-                  txtFeminin: true,
+              if (episode.avecQui != null) ...[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ComposantTexte(
+                      texte: 'Avec qui',
+                      weight: FontWeight.bold,
+                    ),
+                    for (String p in episode.avecQui!)
+                      ComposantTexte(texte: p, alignment: TextAlign.start),
+                  ],
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.all(5),
-                child: ChampNombre(
-                  txt: 'Durée (min)',
-                  champController: dureeController,
-                  largeur: 80,
-                  nbMaxNombres: 3,
+              ],
+              if (episode.duree != null) ...[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ComposantTexte(texte: 'Durée', weight: FontWeight.bold),
+                    ComposantTexte(texte: '${episode.duree} min'),
+                  ],
                 ),
-              ),
+              ],
+              if (episode.note != null) ...[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ComposantTexte(texte: 'Note', weight: FontWeight.bold),
+                    ComposantTexte(texte: '${episode.note} / 10'),
+                  ],
+                ),
+              ],
+              if (episode.dateVisionnage != null) ...[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ComposantTexte(
+                      texte: 'Date de visionnage',
+                      weight: FontWeight.bold,
+                    ),
+                    ComposantTexte(
+                      texte: DateFormat(
+                        'dd/MM/yyyy',
+                      ).format(episode.dateVisionnage!),
+                    ),
+                  ],
+                ),
+              ],
+              if (episode.description != null &&
+                  episode.description != '') ...[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ComposantTexte(
+                      texte: 'Description',
+                      weight: FontWeight.bold,
+                    ),
+                    ComposantTexte(
+                      texte: episode.description!,
+                      alignment: TextAlign.start,
+                    ),
+                  ],
+                ),
+              ],
               Container(
-                margin: EdgeInsets.all(5),
-                child: ChampNote(txt: 'Note', champController: noteController),
-              ),
-              Container(
-                margin: EdgeInsets.all(5),
-                child: ChampTexte(
-                  txt: 'Description',
-                  champController: descriptionController,
-                  plusieursLignes: true,
+                margin: EdgeInsets.only(top: 10),
+                child: Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) => FormModifEpisode(
+                            serie: widget.serie,
+                            episode: episode,
+                            listeAvecQui: widget.listeAvecQui,
+                            addAvecQuiFonction: widget.addAvecQuiFonction,
+                            supprAvecQuiFonction: widget.supprAvecQuiFonction,
+                            selectionnerAvecQuiFonction:
+                                widget.selectionnerAvecQuiFonction,
+                            setEpisodeState: setStateDialog,
+                            sauvegarderFonction: widget.sauvegarderFonction,
+                          ),
+                        );
+                      },
+                      child: ComposantTexte(texte: 'Modifier'),
+                    ),
+                    BoutonAnnuler(txt: 'Fermer'),
+                  ],
                 ),
               ),
             ],
           ),
-          actions: [
-            ElevatedButton(
-              style: ButtonStyle(
-                elevation: WidgetStateProperty.all(0.0),
-                backgroundColor: WidgetStateProperty.all(serieOrange),
-                fixedSize: WidgetStateProperty.all(
-                  Size.fromWidth(TailleAdaptateur.width(context, 150)),
-                ),
-              ),
-              onPressed: () {
-                final etaitVuAvant = widget.serie.statut == 'vu';
-                widget.episode.setTitre(
-                  titreController.text == '' ? null : titreController.text,
-                );
-                widget.episode.setVu(vu);
-                widget.episode.setAvecQui(avecQui.isEmpty ? null : avecQui);
-                widget.episode.setDuree(int.tryParse(dureeController.text));
-                widget.episode.setNote(double.tryParse(noteController.text));
-                widget.episode.setDescription(
-                  descriptionController.text == ''
-                      ? null
-                      : descriptionController.text,
-                );
-                widget.sauvegarderFonction(
-                  widget.serie,
-                  etaitVuAvant: etaitVuAvant,
-                );
-                Navigator.pop(context);
-              },
-              child: ComposantTexte(
-                texte: 'Enregistrer',
-                color: Colors.white,
-                weight: FontWeight.bold,
-              ),
-            ),
-          ],
-          actionsAlignment: MainAxisAlignment.center,
         );
       },
     );

@@ -8,6 +8,7 @@ import 'package:culture_app1/pages/series/elements/forms/form_modif_serie.dart';
 import 'package:culture_app1/pages/series/elements/position_pop_up.dart';
 import 'package:culture_app1/pages/series/elements/saison_pop_up.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class SeriePopUp extends StatefulWidget {
   final Serie serie;
@@ -63,9 +64,6 @@ class SeriePopUp extends StatefulWidget {
 }
 
 class _SeriePopUpState extends State<SeriePopUp> {
-  String labelNote(String statut) => statut == 'vu'
-      ? 'Note'
-      : 'Envie de voir';
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +100,7 @@ class _SeriePopUpState extends State<SeriePopUp> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ComposantTexte(
-                      texte: labelNote(statut),
+                      texte: 'Note',
                       weight: FontWeight.bold,
                     ),
                     ComposantTexte(texte: '${widget.serie.note} / 10'),
@@ -118,6 +116,38 @@ class _SeriePopUpState extends State<SeriePopUp> {
                       weight: FontWeight.bold,
                     ),
                     ComposantTexte(texte: widget.serie.annee.toString()),
+                  ],
+                ),
+              ],
+              if (widget.serie.dateDebutEffective != null) ...[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ComposantTexte(
+                      texte: 'Date de début',
+                      weight: FontWeight.bold,
+                    ),
+                    ComposantTexte(
+                      texte: DateFormat(
+                        'dd/MM/yyyy',
+                      ).format(widget.serie.dateDebutEffective!),
+                    ),
+                  ],
+                ),
+              ],
+              if (widget.serie.dateFinEffective != null) ...[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ComposantTexte(
+                      texte: 'Date de fin',
+                      weight: FontWeight.bold,
+                    ),
+                    ComposantTexte(
+                      texte: DateFormat(
+                        'dd/MM/yyyy',
+                      ).format(widget.serie.dateFinEffective!),
+                    ),
                   ],
                 ),
               ],
@@ -329,8 +359,7 @@ class _SeriePopUpState extends State<SeriePopUp> {
                       },
                       child: ComposantTexte(texte: 'Modifier'),
                     ),
-                    if (statut != 'vu' &&
-                        widget.serie.saisons.any((s) => s.definie))
+                    if (statut != 'vu' && widget.serie.saisons.isNotEmpty)
                       TextButton(
                         onPressed: () {
                           showDialog(

@@ -1,48 +1,42 @@
-import 'package:culture_app1/commun/classes/class_films_vu.dart';
-import 'package:culture_app1/commun/classes/class_films_voir.dart';
+import 'package:culture_app1/commun/classes/class_serie.dart';
 import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
+import 'package:culture_app1/commun/couleur.dart';
 import 'package:culture_app1/pages/films/data/donnees/classement_pop_up.dart';
 import 'package:culture_app1/pages/films/data/donnees/rond_data.dart';
 import 'package:flutter/material.dart';
 
-class AfficheDonnees extends StatelessWidget {
-  final List<FilmsVu> listeFilms;
-  final List<FilmsVoir> listeFilmsVoir;
-  const AfficheDonnees({
+class AfficheDonneesSerie extends StatelessWidget {
+  // Séries vues (filtrées par la période choisie) : notes, avec qui, genre,
+  // créateur·rice et données manquantes sont calculés dessus.
+  final List<Serie> listeSeriesVues;
+  // Séries vues + en cours (uniquement en vue GLOBALE) : temps total regardé.
+  final List<Serie> listeSeriesTemps;
+  // Séries à voir, non filtrées par période : recommandations.
+  final List<Serie> listeSeriesAVoir;
+  const AfficheDonneesSerie({
     super.key,
-    required this.listeFilms,
-    required this.listeFilmsVoir,
+    required this.listeSeriesVues,
+    required this.listeSeriesTemps,
+    required this.listeSeriesAVoir,
   });
 
-  int dureeTotale(List<FilmsVu> films) {
+  int dureeTotaleMinutes(List<Serie> series) {
     int total = 0;
-    for (var film in films) {
-      if (film.duree != null) {
-        total += film.duree!;
-      }
+    for (var serie in series) {
+      final duree = serie.dureeVisionneeMinutes;
+      if (duree != null) total += duree;
     }
     return total;
   }
 
-  List<String> meilleursFilms(List<FilmsVu> films) {
-    List<FilmsVu> sansNull = films.where((f) => f.note != null).toList();
-    var fnote = sansNull.reduce((a, b) => a.note! > b.note! ? a : b);
-    var listeFinale = sansNull.where((f) => f.note! == fnote.note!);
-    List<String> result = [];
-    for (FilmsVu f in listeFinale) {
-      result.add(f.titre);
-    }
-    return result;
-  }
-
   Map<String, int> compteOccurrences<T>(
-    List<T> films,
+    List<T> series,
     List<String>? Function(T) getter,
   ) {
     Map<String, int> comptes = {};
-    for (var film in films) {
-      final valeurs = getter(film);
+    for (var serie in series) {
+      final valeurs = getter(serie);
       if (valeurs != null) {
         for (var v in valeurs) {
           comptes[v] = (comptes[v] ?? 0) + 1;
@@ -63,23 +57,25 @@ class AfficheDonnees extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final comptePersonnes = compteOccurrences(listeFilms, (f) => f.personnes);
-    final topPersonnes = topOccurrences(comptePersonnes);
-    final compteActeurs = compteOccurrences(listeFilms, (f) => f.acteurs);
-    final topActeurs = topOccurrences(compteActeurs);
-    final compteRealisateurs = compteOccurrences(
-      listeFilms,
-      (f) =>
-          f.realisateur == null || f.realisateur == '' ? null : [f.realisateur!],
+    final compteAvecQui = compteOccurrences(listeSeriesVues, (s) => s.avecQui);
+    final topAvecQui = topOccurrences(compteAvecQui);
+    final compteGenres = compteOccurrences(listeSeriesVues, (s) => s.genre);
+    final topGenres = topOccurrences(compteGenres);
+    final compteCreateurs = compteOccurrences(
+      listeSeriesVues,
+      (s) => s.createur == null || s.createur == '' ? null : [s.createur!],
     );
-    final topRealisateurs = topOccurrences(compteRealisateurs);
-    final compteCinemas = compteOccurrences(listeFilms, (f) => f.cinemas);
-    final topCinemas = topOccurrences(compteCinemas);
+    final topCreateurs = topOccurrences(compteCreateurs);
     final compteRecommandations = compteOccurrences(
-      listeFilmsVoir,
-      (f) => f.recommandation,
+      listeSeriesAVoir,
+      (s) => s.recommandePar,
     );
     final topRecommandations = topOccurrences(compteRecommandations);
+    final dureeTotale = dureeTotaleMinutes(listeSeriesTemps);
+    final seriesAvecDuree = listeSeriesTemps
+        .where((s) => s.dureeVisionneeMinutes != null)
+        .toList();
+    final seriesAvecNote = listeSeriesVues.where((s) => s.note != null).toList();
     return SingleChildScrollView(
       child: SizedBox(
         width: double.infinity,
@@ -89,13 +85,7 @@ class AfficheDonnees extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                RondData(data: '${listeFilms.length}'),
-                if (listeFilms.where((f) => f.cinema != null).isNotEmpty) ...[
-                  RondData(
-                    data:
-                        '${listeFilms.where((f) => f.cinema != null && f.cinema!).length}',
-                  ),
-                ],
+                RondData(data: '${listeSeriesVues.length}', couleur: serieOrange),
               ],
             ),
             Row(
@@ -104,39 +94,27 @@ class AfficheDonnees extends StatelessWidget {
               children: [
                 SizedBox(
                   width: TailleAdaptateur.width(context, 140),
-                  child: ComposantTexte(texte: 'Films vus', size: 20),
+                  child: ComposantTexte(texte: 'Séries vues', size: 20),
                 ),
-                if (listeFilms.where((f) => f.cinema != null).isNotEmpty) ...[
-                  SizedBox(
-                    width: TailleAdaptateur.width(context, 140),
-                    child: ComposantTexte(
-                      texte: 'Films vus au cinéma',
-                      size: 20,
-                    ),
-                  ),
-                ],
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                if (listeFilms.where((f) => f.duree != null).isNotEmpty) ...[
+                if (seriesAvecDuree.isNotEmpty) ...[
                   RondData(
-                    data:
-                        (dureeTotale(listeFilms) / 60).floor() < 10 &&
-                            (dureeTotale(listeFilms) % 60) != 0
-                        ? '${(dureeTotale(listeFilms) / 60).floor()}h${dureeTotale(listeFilms) % 60}'
-                        : '${(dureeTotale(listeFilms) / 60).floor()}',
+                    couleur: serieOrange,
+                    data: (dureeTotale / 60).floor() < 10 && (dureeTotale % 60) != 0
+                        ? '${(dureeTotale / 60).floor()}h${dureeTotale % 60}'
+                        : '${(dureeTotale / 60).floor()}',
                   ),
                 ],
-                if (listeFilms.where((f) => f.note != null).isNotEmpty) ...[
+                if (seriesAvecNote.isNotEmpty) ...[
                   RondData(
+                    couleur: serieOrange,
                     data:
-                        (listeFilms
-                                    .where((f) => f.note != null)
-                                    .map((f) => f.note!)
-                                    .reduce((a, b) => a + b) /
-                                listeFilms.where((f) => f.note != null).length)
+                        (seriesAvecNote.map((s) => s.note!).reduce((a, b) => a + b) /
+                                seriesAvecNote.length)
                             .toStringAsFixed(2)
                             .replaceAll(RegExp(r'\.?0+$'), ''),
                   ),
@@ -147,7 +125,7 @@ class AfficheDonnees extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (listeFilms.where((f) => f.duree != null).isNotEmpty) ...[
+                if (seriesAvecDuree.isNotEmpty) ...[
                   SizedBox(
                     width: TailleAdaptateur.width(context, 140),
                     child: ComposantTexte(
@@ -156,7 +134,7 @@ class AfficheDonnees extends StatelessWidget {
                     ),
                   ),
                 ],
-                if (listeFilms.where((f) => f.note != null).isNotEmpty) ...[
+                if (seriesAvecNote.isNotEmpty) ...[
                   SizedBox(
                     width: TailleAdaptateur.width(context, 140),
                     child: ComposantTexte(texte: 'Note moyenne', size: 20),
@@ -164,7 +142,7 @@ class AfficheDonnees extends StatelessWidget {
                 ],
               ],
             ),
-            if (comptePersonnes.isNotEmpty) ...[
+            if (compteAvecQui.isNotEmpty) ...[
               SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -173,7 +151,7 @@ class AfficheDonnees extends StatelessWidget {
                   Flexible(
                     child: ComposantTexte(
                       texte:
-                          '${topPersonnes.length > 1 ? 'Vu le plus de films avec (ex æquo)' : 'Vu le plus de films avec'} : ${topPersonnes.join(', ')}',
+                          '${topAvecQui.length > 1 ? 'Vu le plus de séries avec (ex æquo)' : 'Vu le plus de séries avec'} : ${topAvecQui.join(', ')}',
                       size: 18,
                     ),
                   ),
@@ -182,8 +160,9 @@ class AfficheDonnees extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (context) => ClassementPopUp(
-                          titre: 'Films vus par personne',
-                          compte: comptePersonnes,
+                          titre: 'Séries vues par personne',
+                          compte: compteAvecQui,
+                          couleur: serieOrange,
                         ),
                       );
                     },
@@ -192,7 +171,7 @@ class AfficheDonnees extends StatelessWidget {
                 ],
               ),
             ],
-            if (compteActeurs.isNotEmpty) ...[
+            if (compteGenres.isNotEmpty) ...[
               SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -201,7 +180,7 @@ class AfficheDonnees extends StatelessWidget {
                   Flexible(
                     child: ComposantTexte(
                       texte:
-                          '${topActeurs.length > 1 ? 'Acteur·ice le plus vu (ex æquo)' : 'Acteur·ice le plus vu'} : ${topActeurs.join(', ')}',
+                          '${topGenres.length > 1 ? 'Genre le plus regardé (ex æquo)' : 'Genre le plus regardé'} : ${topGenres.join(', ')}',
                       size: 18,
                     ),
                   ),
@@ -210,8 +189,9 @@ class AfficheDonnees extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (context) => ClassementPopUp(
-                          titre: 'Films vus par acteur·ice',
-                          compte: compteActeurs,
+                          titre: 'Séries vues par genre',
+                          compte: compteGenres,
+                          couleur: serieOrange,
                         ),
                       );
                     },
@@ -220,7 +200,7 @@ class AfficheDonnees extends StatelessWidget {
                 ],
               ),
             ],
-            if (compteRealisateurs.isNotEmpty) ...[
+            if (compteCreateurs.isNotEmpty) ...[
               SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -229,7 +209,7 @@ class AfficheDonnees extends StatelessWidget {
                   Flexible(
                     child: ComposantTexte(
                       texte:
-                          '${topRealisateurs.length > 1 ? 'Réalisateur·rice le plus vu (ex æquo)' : 'Réalisateur·rice le plus vu'} : ${topRealisateurs.join(', ')}',
+                          '${topCreateurs.length > 1 ? 'Créateur·rice le plus vu (ex æquo)' : 'Créateur·rice le plus vu'} : ${topCreateurs.join(', ')}',
                       size: 18,
                     ),
                   ),
@@ -238,36 +218,9 @@ class AfficheDonnees extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (context) => ClassementPopUp(
-                          titre: 'Films vus par réalisateur·rice',
-                          compte: compteRealisateurs,
-                        ),
-                      );
-                    },
-                    icon: Icon(Icons.leaderboard),
-                  ),
-                ],
-              ),
-            ],
-            if (compteCinemas.isNotEmpty) ...[
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: ComposantTexte(
-                      texte:
-                          '${topCinemas.length > 1 ? 'Cinéma où tu vas le plus (ex æquo)' : 'Cinéma où tu vas le plus'} : ${topCinemas.join(', ')}',
-                      size: 18,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => ClassementPopUp(
-                          titre: 'Films vus par cinéma',
-                          compte: compteCinemas,
+                          titre: 'Séries vues par créateur·rice',
+                          compte: compteCreateurs,
+                          couleur: serieOrange,
                         ),
                       );
                     },
@@ -294,8 +247,9 @@ class AfficheDonnees extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (context) => ClassementPopUp(
-                          titre: 'Films à voir recommandés par',
+                          titre: 'Séries à voir recommandées par',
                           compte: compteRecommandations,
+                          couleur: serieOrange,
                         ),
                       );
                     },
@@ -305,39 +259,41 @@ class AfficheDonnees extends StatelessWidget {
               ),
             ],
             SizedBox(height: 20),
-            if (listeFilms.where((f) => f.date == null).isNotEmpty) ...[
+            if (listeSeriesVues.where((s) => s.dateFinEffective == null).isNotEmpty) ...[
               Center(
                 child: Container(
                   margin: EdgeInsets.only(top: 10),
                   child: ComposantTexte(
                     texte:
-                        'Nombre de films sans date : ${listeFilms.where((f) => f.date == null).length}',
+                        'Nombre de séries sans date de fin : ${listeSeriesVues.where((s) => s.dateFinEffective == null).length}',
                     alignment: TextAlign.start,
                     size: 18,
                   ),
                 ),
               ),
             ],
-            if (listeFilms.where((f) => f.duree == null).isNotEmpty) ...[
+            if (listeSeriesVues
+                .where((s) => s.dureeVisionneeMinutes == null)
+                .isNotEmpty) ...[
               Center(
                 child: Container(
                   margin: EdgeInsets.only(top: 10),
                   child: ComposantTexte(
                     texte:
-                        'Nombre de films sans durée : ${listeFilms.where((f) => f.duree == null).length}',
+                        'Nombre de séries sans durée : ${listeSeriesVues.where((s) => s.dureeVisionneeMinutes == null).length}',
                     alignment: TextAlign.start,
                     size: 18,
                   ),
                 ),
               ),
             ],
-            if (listeFilms.where((f) => f.note == null).isNotEmpty) ...[
+            if (listeSeriesVues.where((s) => s.note == null).isNotEmpty) ...[
               Center(
                 child: Container(
                   margin: EdgeInsets.only(top: 10),
                   child: ComposantTexte(
                     texte:
-                        'Nombre de films sans note : ${listeFilms.where((f) => f.note == null).length}',
+                        'Nombre de séries sans note : ${listeSeriesVues.where((s) => s.note == null).length}',
                     alignment: TextAlign.center,
                     size: 18,
                   ),

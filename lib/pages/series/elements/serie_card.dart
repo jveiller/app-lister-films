@@ -64,6 +64,10 @@ class _SerieCardState extends State<SerieCard> {
       final vus = episodes.where((e) => e.vu).length;
       return '$vus épisode·s vus sur ${episodes.length}';
     }
+    final estimation = widget.serie.estimationEpisodes;
+    if (estimation != null) {
+      return '${estimation.nbEpisodes} épisodes de ${estimation.dureeMoyenne} minutes';
+    }
     if (widget.serie.genre != null) return widget.serie.genre!.join('/');
     return '';
   }

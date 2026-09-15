@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 
 class RondData extends StatelessWidget {
   final String data;
-  const RondData({super.key, required this.data});
+  final Color couleur;
+  const RondData({super.key, required this.data, this.couleur = filmJaune});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class RondData extends StatelessWidget {
           margin: EdgeInsets.symmetric(vertical: 15),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(360),
-            color: filmJaune,
+            color: couleur,
           ),
           child: Center(
             child: ComposantTexte(

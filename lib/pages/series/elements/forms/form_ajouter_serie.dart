@@ -2,6 +2,7 @@ import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/commun/couleur.dart';
 import 'package:culture_app1/commun/database/db_suggestions.dart';
+import 'package:culture_app1/commun/elements/form/champs/champ_date.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_liste.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_liste_deroulant.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_nombre.dart';
@@ -71,6 +72,16 @@ class _FormAjouterSerieState extends State<FormAjouterSerie> {
   List<String> recommandePar = [];
   final List<String> listeActeurs = [];
   final List<String> listeCitations = [];
+  DateTime? dateDebutController;
+  DateTime? dateFinController;
+
+  void changeDateDebut(DateTime? value) {
+    setState(() => dateDebutController = value);
+  }
+
+  void changeDateFin(DateTime? value) {
+    setState(() => dateFinController = value);
+  }
 
   void addGenre(String g) {
     if (!genres.contains(g)) setState(() => genres.add(g));
@@ -163,8 +174,24 @@ class _FormAjouterSerieState extends State<FormAjouterSerie> {
                   Container(
                     margin: EdgeInsets.all(5),
                     child: ChampNote(
-                      txt: 'Envie de voir',
+                      txt: 'Note',
                       champController: noteController,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ChampDate(
+                      txt: 'Date de début',
+                      changeDate: changeDateDebut,
+                      date: dateDebutController,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ChampDate(
+                      txt: 'Date de fin',
+                      changeDate: changeDateFin,
+                      date: dateFinController,
                     ),
                   ),
                   Container(
@@ -320,6 +347,8 @@ class _FormAjouterSerieState extends State<FormAjouterSerie> {
                           ? null
                           : listeCitations,
                       note: double.tryParse(noteController.text),
+                      dateDebut: dateDebutController,
+                      dateFin: dateFinController,
                     );
                   });
                   Navigator.pop(context);
