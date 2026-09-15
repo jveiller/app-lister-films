@@ -265,7 +265,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
       setState(() {
         _personnes.insert(0, p);
       });
-      await filmVuBox.put('personnes', _personnes);
+      await filmBox.put('personnes', _personnes);
       await loadPersonne();
     }
   }
@@ -275,7 +275,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
       setState(() {
         _personnes.remove(p);
       });
-      await filmVuBox.put('personnes', _personnes);
+      await filmBox.put('personnes', _personnes);
       await loadPersonne();
       return true;
     }
@@ -283,7 +283,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
   }
 
   Future<void> loadPersonne() async {
-    List<String>? p = filmVuBox.get('personnes');
+    List<String>? p = filmBox.get('personnes');
     setState(() {
       _personnes = p ?? ['Maman'];
     });
@@ -294,7 +294,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
       setState(() {
         _personnes.insert(0, p);
       });
-      await filmVuBox.put('personnes', _personnes);
+      await filmBox.put('personnes', _personnes);
       await loadPersonne();
     }
   }
@@ -343,7 +343,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
       setState(() {
         _recommandations.insert(0, r);
       });
-      await filmVuBox.put('recommandations', _recommandations);
+      await filmBox.put('recommandations', _recommandations);
       await loadRecommandation();
     }
   }
@@ -353,7 +353,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
       setState(() {
         _recommandations.remove(r);
       });
-      await filmVuBox.put('recommandations', _recommandations);
+      await filmBox.put('recommandations', _recommandations);
       await loadRecommandation();
       return true;
     }
@@ -361,7 +361,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
   }
 
   Future<void> loadRecommandation() async {
-    List<String>? r = filmVuBox.get('recommandations');
+    List<String>? r = filmBox.get('recommandations');
     setState(() {
       _recommandations = r ?? ['Ami·e'];
     });
@@ -372,7 +372,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
       setState(() {
         _recommandations.insert(0, r);
       });
-      await filmVuBox.put('recommandations', _recommandations);
+      await filmBox.put('recommandations', _recommandations);
       await loadRecommandation();
     }
   }

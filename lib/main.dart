@@ -1,3 +1,4 @@
+import 'package:culture_app1/commun/database/migration_listes_communes.dart';
 import 'package:culture_app1/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -10,6 +11,7 @@ void main() async {
   await Hive.openBox('film');
   await Hive.openBox('filmVu');
   await Hive.openBox('serie');
+  await migrerListesCommunes();
   runApp(ProviderScope(child: MyApp()));
 }
 

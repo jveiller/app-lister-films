@@ -29,6 +29,7 @@ class _SeriePageState extends State<SeriePage> {
   final _searchController = TextEditingController();
   String tri = 'date';
   late Box serieBox;
+  late Box filmBox;
 
   void _addSerie({
     required String titre,
@@ -189,7 +190,7 @@ class _SeriePageState extends State<SeriePage> {
   Future<void> addGenre(String g) async {
     if (!_genres.contains(g) && g != '') {
       setState(() => _genres.insert(0, g));
-      await serieBox.put('genres', _genres);
+      await filmBox.put('genres', _genres);
       await loadGenre();
     }
   }
@@ -197,7 +198,7 @@ class _SeriePageState extends State<SeriePage> {
   Future<bool> deleteGenre(String g) async {
     if (_genres.length > 1) {
       setState(() => _genres.remove(g));
-      await serieBox.put('genres', _genres);
+      await filmBox.put('genres', _genres);
       await loadGenre();
       return true;
     }
@@ -205,14 +206,14 @@ class _SeriePageState extends State<SeriePage> {
   }
 
   Future<void> loadGenre() async {
-    List<String>? g = serieBox.get('genres');
+    List<String>? g = filmBox.get('genres');
     setState(() => _genres = g ?? ['Comédie']);
   }
 
   Future<void> selectionnerGenre(String g) async {
     if (_genres.remove(g)) {
       setState(() => _genres.insert(0, g));
-      await serieBox.put('genres', _genres);
+      await filmBox.put('genres', _genres);
       await loadGenre();
     }
   }
@@ -220,7 +221,7 @@ class _SeriePageState extends State<SeriePage> {
   Future<void> addPlateforme(String p) async {
     if (!_plateformes.contains(p) && p != '') {
       setState(() => _plateformes.insert(0, p));
-      await serieBox.put('plateformes', _plateformes);
+      await filmBox.put('plateformes', _plateformes);
       await loadPlateforme();
     }
   }
@@ -228,7 +229,7 @@ class _SeriePageState extends State<SeriePage> {
   Future<bool> deletePlateforme(String p) async {
     if (_plateformes.length > 1) {
       setState(() => _plateformes.remove(p));
-      await serieBox.put('plateformes', _plateformes);
+      await filmBox.put('plateformes', _plateformes);
       await loadPlateforme();
       return true;
     }
@@ -236,14 +237,14 @@ class _SeriePageState extends State<SeriePage> {
   }
 
   Future<void> loadPlateforme() async {
-    List<String>? p = serieBox.get('plateformes');
+    List<String>? p = filmBox.get('plateformes');
     setState(() => _plateformes = p ?? ['Netflix']);
   }
 
   Future<void> selectionnerPlateforme(String p) async {
     if (_plateformes.remove(p)) {
       setState(() => _plateformes.insert(0, p));
-      await serieBox.put('plateformes', _plateformes);
+      await filmBox.put('plateformes', _plateformes);
       await loadPlateforme();
     }
   }
@@ -251,7 +252,7 @@ class _SeriePageState extends State<SeriePage> {
   Future<void> addAvecQui(String a) async {
     if (!_avecQui.contains(a) && a != '') {
       setState(() => _avecQui.insert(0, a));
-      await serieBox.put('avecQui', _avecQui);
+      await filmBox.put('personnes', _avecQui);
       await loadAvecQui();
     }
   }
@@ -259,7 +260,7 @@ class _SeriePageState extends State<SeriePage> {
   Future<bool> deleteAvecQui(String a) async {
     if (_avecQui.length > 1) {
       setState(() => _avecQui.remove(a));
-      await serieBox.put('avecQui', _avecQui);
+      await filmBox.put('personnes', _avecQui);
       await loadAvecQui();
       return true;
     }
@@ -267,14 +268,14 @@ class _SeriePageState extends State<SeriePage> {
   }
 
   Future<void> loadAvecQui() async {
-    List<String>? a = serieBox.get('avecQui');
+    List<String>? a = filmBox.get('personnes');
     setState(() => _avecQui = a ?? ['Maman']);
   }
 
   Future<void> selectionnerAvecQui(String a) async {
     if (_avecQui.remove(a)) {
       setState(() => _avecQui.insert(0, a));
-      await serieBox.put('avecQui', _avecQui);
+      await filmBox.put('personnes', _avecQui);
       await loadAvecQui();
     }
   }
@@ -282,7 +283,7 @@ class _SeriePageState extends State<SeriePage> {
   Future<void> addRecommandation(String r) async {
     if (!_recommandations.contains(r) && r != '') {
       setState(() => _recommandations.insert(0, r));
-      await serieBox.put('recommandations', _recommandations);
+      await filmBox.put('recommandations', _recommandations);
       await loadRecommandation();
     }
   }
@@ -290,7 +291,7 @@ class _SeriePageState extends State<SeriePage> {
   Future<bool> deleteRecommandation(String r) async {
     if (_recommandations.length > 1) {
       setState(() => _recommandations.remove(r));
-      await serieBox.put('recommandations', _recommandations);
+      await filmBox.put('recommandations', _recommandations);
       await loadRecommandation();
       return true;
     }
@@ -298,14 +299,14 @@ class _SeriePageState extends State<SeriePage> {
   }
 
   Future<void> loadRecommandation() async {
-    List<String>? r = serieBox.get('recommandations');
+    List<String>? r = filmBox.get('recommandations');
     setState(() => _recommandations = r ?? ['Ami·e']);
   }
 
   Future<void> selectionnerRecommandation(String r) async {
     if (_recommandations.remove(r)) {
       setState(() => _recommandations.insert(0, r));
-      await serieBox.put('recommandations', _recommandations);
+      await filmBox.put('recommandations', _recommandations);
       await loadRecommandation();
     }
   }
@@ -354,6 +355,7 @@ class _SeriePageState extends State<SeriePage> {
   void initState() {
     super.initState();
     serieBox = Hive.box('serie');
+    filmBox = Hive.box('film');
     _fetchSeries();
     loadGenre();
     loadPlateforme();
