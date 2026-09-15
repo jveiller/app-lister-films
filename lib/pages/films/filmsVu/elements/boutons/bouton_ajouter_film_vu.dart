@@ -21,6 +21,10 @@ class BoutonAjouterFilmVu extends StatelessWidget {
   final Function addCinemaFonction;
   final Function supprCinemaFonction;
   final Function selectionnerCinemaFonction;
+  final List<String> listeRecommandations;
+  final Function addRecommandationFonction;
+  final Function supprRecommandationFonction;
+  final Function selectionnerRecommandationFonction;
   const BoutonAjouterFilmVu({
     super.key,
     required this.listeGenre,
@@ -41,6 +45,10 @@ class BoutonAjouterFilmVu extends StatelessWidget {
     required this.addCinemaFonction,
     required this.supprCinemaFonction,
     required this.selectionnerCinemaFonction,
+    required this.listeRecommandations,
+    required this.addRecommandationFonction,
+    required this.supprRecommandationFonction,
+    required this.selectionnerRecommandationFonction,
   });
 
   @override
@@ -70,6 +78,11 @@ class BoutonAjouterFilmVu extends StatelessWidget {
               addCinemaFonction: addCinemaFonction,
               supprCinemaFonction: supprCinemaFonction,
               selectionnerCinemaFonction: selectionnerCinemaFonction,
+              listeRecommandations: listeRecommandations,
+              addRecommandationFonction: addRecommandationFonction,
+              supprRecommandationFonction: supprRecommandationFonction,
+              selectionnerRecommandationFonction:
+                  selectionnerRecommandationFonction,
             );
           },
         );

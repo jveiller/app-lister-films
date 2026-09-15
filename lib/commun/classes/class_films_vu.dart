@@ -17,6 +17,7 @@ class FilmsVu {
   bool? accompagne;
   List<String>? personnes;
   List<String>? cinemas;
+  List<String>? recommandation;
 
   FilmsVu({
     required this.titre,
@@ -35,6 +36,7 @@ class FilmsVu {
     this.accompagne,
     this.personnes,
     this.cinemas,
+    this.recommandation,
     required this.id,
   });
 
@@ -91,4 +93,6 @@ class FilmsVu {
   void setPersonnes(List<String>? p) => personnes = p;
 
   void setCinemas(List<String>? c) => cinemas = c;
+
+  void setRecommandation(List<String>? r) => recommandation = r;
 }

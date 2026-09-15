@@ -27,6 +27,10 @@ class FormAvisFilm extends StatefulWidget {
   final Function supprPlateformeFonction;
   final Function selectionnerPlateformeFonction;
   final Function deleteFilmVoirFonction;
+  final List<String> listeRecommandations;
+  final Function addRecommandationFonction;
+  final Function supprRecommandationFonction;
+  final Function selectionnerRecommandationFonction;
   const FormAvisFilm({
     super.key,
     required this.fv,
@@ -39,6 +43,10 @@ class FormAvisFilm extends StatefulWidget {
     required this.supprPlateformeFonction,
     required this.selectionnerPlateformeFonction,
     required this.deleteFilmVoirFonction,
+    required this.listeRecommandations,
+    required this.addRecommandationFonction,
+    required this.supprRecommandationFonction,
+    required this.selectionnerRecommandationFonction,
   });
 
   @override
@@ -65,6 +73,7 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
   //late String supprGenreController;
   late List<String> listeActeurs;
   final List<String> listeCitations = [];
+  late List<String> recommandations;
   //final addGenreController = TextEditingController();
   final keyForm = GlobalKey<FormState>();
   //final keyAddForm = GlobalKey<FormState>();
@@ -84,6 +93,7 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
     String? contexte,
     bool? cinema,
     DateTime? date,
+    List<String>? recommandation,
   }) async {
     var box = Hive.box('filmVu');
     int id = box.get('id') ?? 1;
@@ -102,6 +112,7 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
       contexte: contexte,
       cinema: cinema,
       date: date,
+      recommandation: recommandation,
     );
     //Fonction pour ajouter une élément dans la base de données
     //Si l'élément renvoyé par le champ nom du form n'est pas null
@@ -171,6 +182,20 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
     });
   }
 
+  void addRecommandation(String r) {
+    if (!recommandations.contains(r)) {
+      setState(() {
+        recommandations.add(r);
+      });
+    }
+  }
+
+  void supprRecommandation(String r) {
+    setState(() {
+      recommandations.remove(r);
+    });
+  }
+
   void changeDate(DateTime? value) {
     setState(() {
       dateController = value;
@@ -227,6 +252,7 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
     plateformes = widget.fv.plateforme ?? [];
     //supprGenreController = widget.listeGenres.first;
     listeActeurs = widget.fv.acteurs ?? [];
+    recommandations = widget.fv.recommandation ?? [];
   }
 
   @override
@@ -329,6 +355,23 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
                       addListeFonction: addCitation,
                       supprListeFonction: supprCitation,
                       apresAjoutez: 'une citation',
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ChampListeDeroulant(
+                      txt: 'Recommandé par',
+                      liste: recommandations,
+                      listeDeroulant: widget.listeRecommandations,
+                      addDeroulantFonction: widget.addRecommandationFonction,
+                      supprDeroulantFonction:
+                          widget.supprRecommandationFonction,
+                      selectionnerDeroulantFonction:
+                          widget.selectionnerRecommandationFonction,
+                      addListeFonction: addRecommandation,
+                      supprListeFonction: supprRecommandation,
+                      apresAjoutez: 'une recommandation',
+                      txtFeminin: true,
                     ),
                   ),
                   Container(
@@ -491,6 +534,9 @@ class _FormAvisFilmState extends State<FormAvisFilm> {
                           : contexteController.text,
                       cinema: cinemaController,
                       date: dateController,
+                      recommandation: recommandations.isEmpty
+                          ? null
+                          : recommandations,
                     );
                     Navigator.pop(context);
                     Navigator.pop(context);

@@ -20,11 +20,11 @@ class DbFilmsVu {
     String path = join(await getDatabasesPath(), 'filmsVu2.db');
     return await openDatabase(
       path,
-      version: 5,
+      version: 6,
       //Création de la table si nouvelle base de donnée
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE filmsVu2 (id INTEGER PRIMARY KEY, titre TEXT, duree INTEGER, note DEC, genre TEXT, plateforme TEXT, annee INTEGER, description TEXT, acteurs TEXT, citations TEXT, realisateur TEXT, cinema BOOLEAN, contexte TEXT, date TEXT, accompagne BOOLEAN, personnes TEXT, cinemas TEXT)',
+          'CREATE TABLE filmsVu2 (id INTEGER PRIMARY KEY, titre TEXT, duree INTEGER, note DEC, genre TEXT, plateforme TEXT, annee INTEGER, description TEXT, acteurs TEXT, citations TEXT, realisateur TEXT, cinema BOOLEAN, contexte TEXT, date TEXT, accompagne BOOLEAN, personnes TEXT, cinemas TEXT, recommandation TEXT)',
         );
       },
       onUpgrade: (db, oldVersion, newVersion) async {
@@ -41,6 +41,11 @@ class DbFilmsVu {
         }
         if (oldVersion < 5) {
           await db.execute("ALTER TABLE filmsVu2 ADD COLUMN cinemas TEXT");
+        }
+        if (oldVersion < 6) {
+          await db.execute(
+            "ALTER TABLE filmsVu2 ADD COLUMN recommandation TEXT",
+          );
         }
       },
     );
@@ -85,6 +90,12 @@ class DbFilmsVu {
     } else {
       cinemas = null;
     }
+    String? recommandation;
+    if (film.recommandation != null) {
+      recommandation = film.recommandation!.join(',');
+    } else {
+      recommandation = null;
+    }
     return await db.insert('filmsVu2', {
       'titre': film.titre,
       'duree': film.duree,
@@ -104,6 +115,7 @@ class DbFilmsVu {
       'accompagne': film.accompagne,
       'personnes': personnes,
       'cinemas': cinemas,
+      'recommandation': recommandation,
     });
   }
 
@@ -146,6 +158,12 @@ class DbFilmsVu {
     } else {
       cinemas = null;
     }
+    String? recommandation;
+    if (fv.recommandation != null) {
+      recommandation = fv.recommandation!.join(',');
+    } else {
+      recommandation = null;
+    }
     return await db.update(
       'filmsVu2',
       {
@@ -167,6 +185,7 @@ class DbFilmsVu {
         'accompagne': fv.accompagne,
         'personnes': personnes,
         'cinemas': cinemas,
+        'recommandation': recommandation,
       },
       where: 'id=?',
       whereArgs: [fv.id],
@@ -236,6 +255,9 @@ class DbFilmsVu {
           cinemas: film['cinemas'] == null
               ? null
               : (film['cinemas'] as String).split(','),
+          recommandation: film['recommandation'] == null
+              ? null
+              : (film['recommandation'] as String).split(','),
         ),
       );
     }

@@ -29,6 +29,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
   List<String> _plateformes = [];
   List<String> _personnes = [];
   List<String> _cinemas = [];
+  List<String> _recommandations = [];
   bool _initialise = false;
   final _searchController = TextEditingController();
   String tri = 'date';
@@ -55,6 +56,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
     bool? accompagne,
     List<String>? personnes,
     List<String>? cinemas,
+    List<String>? recommandation,
   }) async {
     int id = filmVuBox.get('id') ?? 1;
     var newFilm = FilmsVu(
@@ -75,6 +77,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
       accompagne: accompagne,
       personnes: personnes,
       cinemas: cinemas,
+      recommandation: recommandation,
     );
     //Fonction pour ajouter une élément dans la base de données
     //Si l'élément renvoyé par le champ nom du form n'est pas null
@@ -104,6 +107,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
     bool? accompagne,
     List<String>? personnes,
     List<String>? cinemas,
+    List<String>? recommandation,
   }) {
     setState(() {
       if (titre != null && titre != '') {
@@ -124,6 +128,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
       fv.setAccompagne(accompagne);
       fv.setPersonnes(personnes);
       fv.setCinemas(cinemas);
+      fv.setRecommandation(recommandation);
       DbFilmsVu.update(fv);
     });
     _fetchFilmVu();
@@ -333,6 +338,45 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
     }
   }
 
+  Future<void> addRecommandation(String r) async {
+    if (!_recommandations.contains(r) && r != '') {
+      setState(() {
+        _recommandations.insert(0, r);
+      });
+      await filmVuBox.put('recommandations', _recommandations);
+      await loadRecommandation();
+    }
+  }
+
+  Future<bool> deleteRecommandation(String r) async {
+    if (_recommandations.length > 1) {
+      setState(() {
+        _recommandations.remove(r);
+      });
+      await filmVuBox.put('recommandations', _recommandations);
+      await loadRecommandation();
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> loadRecommandation() async {
+    List<String>? r = filmVuBox.get('recommandations');
+    setState(() {
+      _recommandations = r ?? ['Ami·e'];
+    });
+  }
+
+  Future<void> selectionnerRecommandation(String r) async {
+    if (_recommandations.remove(r)) {
+      setState(() {
+        _recommandations.insert(0, r);
+      });
+      await filmVuBox.put('recommandations', _recommandations);
+      await loadRecommandation();
+    }
+  }
+
   void triDuree() {
     setState(() {
       tri = 'duree';
@@ -376,6 +420,7 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
     loadPlateforme();
     loadPersonne();
     loadCinema();
+    loadRecommandation();
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -427,6 +472,10 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
                 addCinemaFonction: addCinema,
                 supprCinemaFonction: deleteCinema,
                 selectionnerCinemaFonction: selectionnerCinema,
+                listeRecommandations: _recommandations,
+                addRecommandationFonction: addRecommandation,
+                supprRecommandationFonction: deleteRecommandation,
+                selectionnerRecommandationFonction: selectionnerRecommandation,
               ),
             ),
             Container(
@@ -474,6 +523,11 @@ class _FilmsVuPageState extends State<FilmsVuPage> {
                   addCinemaFonction: addCinema,
                   supprCinemaFonction: deleteCinema,
                   selectionnerCinemaFonction: selectionnerCinema,
+                  listeRecommandations: _recommandations,
+                  addRecommandationFonction: addRecommandation,
+                  supprRecommandationFonction: deleteRecommandation,
+                  selectionnerRecommandationFonction:
+                      selectionnerRecommandation,
                 ),
             ],
           ),

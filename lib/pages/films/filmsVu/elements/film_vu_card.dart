@@ -24,6 +24,10 @@ class FilmVuCard extends StatefulWidget {
   final Function addCinemaFonction;
   final Function supprCinemaFonction;
   final Function selectionnerCinemaFonction;
+  final List<String> listeRecommandations;
+  final Function addRecommandationFonction;
+  final Function supprRecommandationFonction;
+  final Function selectionnerRecommandationFonction;
   const FilmVuCard({
     super.key,
     required this.fv,
@@ -45,6 +49,10 @@ class FilmVuCard extends StatefulWidget {
     required this.addCinemaFonction,
     required this.supprCinemaFonction,
     required this.selectionnerCinemaFonction,
+    required this.listeRecommandations,
+    required this.addRecommandationFonction,
+    required this.supprRecommandationFonction,
+    required this.selectionnerRecommandationFonction,
   });
 
   @override
@@ -81,6 +89,11 @@ class _FilmVuCardState extends State<FilmVuCard> {
               addCinemaFonction: widget.addCinemaFonction,
               supprCinemaFonction: widget.supprCinemaFonction,
               selectionnerCinemaFonction: widget.selectionnerCinemaFonction,
+              listeRecommandations: widget.listeRecommandations,
+              addRecommandationFonction: widget.addRecommandationFonction,
+              supprRecommandationFonction: widget.supprRecommandationFonction,
+              selectionnerRecommandationFonction:
+                  widget.selectionnerRecommandationFonction,
             );
           },
         );

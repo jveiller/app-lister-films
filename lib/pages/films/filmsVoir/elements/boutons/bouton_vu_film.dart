@@ -14,6 +14,10 @@ class BoutonVuFilm extends StatelessWidget {
   final Function addPlateformeFonction;
   final Function supprPlateformeFonction;
   final Function selectionnerPlateformeFonction;
+  final List<String> listeRecommandations;
+  final Function addRecommandationFonction;
+  final Function supprRecommandationFonction;
+  final Function selectionnerRecommandationFonction;
   const BoutonVuFilm({
     super.key,
     required this.fv,
@@ -26,6 +30,10 @@ class BoutonVuFilm extends StatelessWidget {
     required this.addPlateformeFonction,
     required this.supprPlateformeFonction,
     required this.selectionnerPlateformeFonction,
+    required this.listeRecommandations,
+    required this.addRecommandationFonction,
+    required this.supprRecommandationFonction,
+    required this.selectionnerRecommandationFonction,
   });
 
   @override
@@ -46,6 +54,11 @@ class BoutonVuFilm extends StatelessWidget {
               addPlateformeFonction: addPlateformeFonction,
               supprPlateformeFonction: supprPlateformeFonction,
               selectionnerPlateformeFonction: selectionnerPlateformeFonction,
+              listeRecommandations: listeRecommandations,
+              addRecommandationFonction: addRecommandationFonction,
+              supprRecommandationFonction: supprRecommandationFonction,
+              selectionnerRecommandationFonction:
+                  selectionnerRecommandationFonction,
             );
           },
         );

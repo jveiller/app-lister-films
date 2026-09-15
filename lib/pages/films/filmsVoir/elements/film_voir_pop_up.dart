@@ -260,6 +260,13 @@ class _FilmVoirPopUpState extends State<FilmVoirPopUp> {
                       supprPlateformeFonction: widget.supprPlateformeFonction,
                       selectionnerPlateformeFonction:
                           widget.selectionnerPlateformeFonction,
+                      listeRecommandations: widget.listeRecommandations,
+                      addRecommandationFonction:
+                          widget.addRecommandationFonction,
+                      supprRecommandationFonction:
+                          widget.supprRecommandationFonction,
+                      selectionnerRecommandationFonction:
+                          widget.selectionnerRecommandationFonction,
                     ),
                     BoutonAnnuler(txt: 'Fermer'),
                   ],

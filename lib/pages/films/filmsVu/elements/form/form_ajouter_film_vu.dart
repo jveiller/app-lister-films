@@ -31,6 +31,10 @@ class FormAjouterFilmVu extends StatefulWidget {
   final Function addCinemaFonction;
   final Function supprCinemaFonction;
   final Function selectionnerCinemaFonction;
+  final List<String> listeRecommandations;
+  final Function addRecommandationFonction;
+  final Function supprRecommandationFonction;
+  final Function selectionnerRecommandationFonction;
   const FormAjouterFilmVu({
     super.key,
     required this.listeGenres,
@@ -51,6 +55,10 @@ class FormAjouterFilmVu extends StatefulWidget {
     required this.addCinemaFonction,
     required this.supprCinemaFonction,
     required this.selectionnerCinemaFonction,
+    required this.listeRecommandations,
+    required this.addRecommandationFonction,
+    required this.supprRecommandationFonction,
+    required this.selectionnerRecommandationFonction,
   });
 
   @override
@@ -83,6 +91,7 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
   bool accompagneOuiIsCheck = false;
   bool accompagneNonIsCheck = false;
   List<String> cinemas = [];
+  List<String> recommandations = [];
   //late String supprGenreController;
 
   /*void changeGenre(String g) {
@@ -209,6 +218,20 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
   void supprCinema(String c) {
     setState(() {
       cinemas.remove(c);
+    });
+  }
+
+  void addRecommandation(String r) {
+    if (!recommandations.contains(r)) {
+      setState(() {
+        recommandations.add(r);
+      });
+    }
+  }
+
+  void supprRecommandation(String r) {
+    setState(() {
+      recommandations.remove(r);
     });
   }
 
@@ -349,6 +372,23 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
                       addListeFonction: addCitation,
                       supprListeFonction: supprCitation,
                       apresAjoutez: 'une citation',
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ChampListeDeroulant(
+                      txt: 'Recommandé par',
+                      liste: recommandations,
+                      listeDeroulant: widget.listeRecommandations,
+                      addDeroulantFonction: widget.addRecommandationFonction,
+                      supprDeroulantFonction:
+                          widget.supprRecommandationFonction,
+                      selectionnerDeroulantFonction:
+                          widget.selectionnerRecommandationFonction,
+                      addListeFonction: addRecommandation,
+                      supprListeFonction: supprRecommandation,
+                      apresAjoutez: 'une recommandation',
+                      txtFeminin: true,
                     ),
                   ),
                   Container(
@@ -561,6 +601,9 @@ class _FormAjouterFilmVuState extends State<FormAjouterFilmVu> {
                       accompagne: accompagneController,
                       personnes: personnes.isEmpty ? null : personnes,
                       cinemas: cinemas.isEmpty ? null : cinemas,
+                      recommandation: recommandations.isEmpty
+                          ? null
+                          : recommandations,
                     );
                   });
                   Navigator.pop(context);

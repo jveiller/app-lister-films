@@ -33,6 +33,10 @@ class FormModifFilmVu extends StatefulWidget {
   final Function addCinemaFonction;
   final Function supprCinemaFonction;
   final Function selectionnerCinemaFonction;
+  final List<String> listeRecommandations;
+  final Function addRecommandationFonction;
+  final Function supprRecommandationFonction;
+  final Function selectionnerRecommandationFonction;
   const FormModifFilmVu({
     super.key,
     required this.fv,
@@ -54,6 +58,10 @@ class FormModifFilmVu extends StatefulWidget {
     required this.addCinemaFonction,
     required this.supprCinemaFonction,
     required this.selectionnerCinemaFonction,
+    required this.listeRecommandations,
+    required this.addRecommandationFonction,
+    required this.supprRecommandationFonction,
+    required this.selectionnerRecommandationFonction,
   });
 
   @override
@@ -85,6 +93,7 @@ class _FormModifFilmVuState extends State<FormModifFilmVu> {
   late bool accompagneOuiIsCheck;
   late bool accompagneNonIsCheck;
   late List<String> cinemas;
+  late List<String> recommandations;
   //final addGenreController = TextEditingController();
   final keyForm = GlobalKey<FormState>();
   //final keyAddForm = GlobalKey<FormState>();
@@ -217,6 +226,20 @@ class _FormModifFilmVuState extends State<FormModifFilmVu> {
     });
   }
 
+  void addRecommandation(String r) {
+    if (!recommandations.contains(r)) {
+      setState(() {
+        recommandations.add(r);
+      });
+    }
+  }
+
+  void supprRecommandation(String r) {
+    setState(() {
+      recommandations.remove(r);
+    });
+  }
+
   void checkOui(val) {
     setState(() {
       ouiIsCheck = val;
@@ -284,6 +307,7 @@ class _FormModifFilmVuState extends State<FormModifFilmVu> {
         ? false
         : !widget.fv.accompagne!;
     cinemas = widget.fv.cinemas ?? [];
+    recommandations = widget.fv.recommandation ?? [];
   }
 
   @override
@@ -386,6 +410,23 @@ class _FormModifFilmVuState extends State<FormModifFilmVu> {
                       addListeFonction: addCitation,
                       supprListeFonction: supprCitation,
                       apresAjoutez: 'une citation',
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ChampListeDeroulant(
+                      txt: 'Recommandé par',
+                      liste: recommandations,
+                      listeDeroulant: widget.listeRecommandations,
+                      addDeroulantFonction: widget.addRecommandationFonction,
+                      supprDeroulantFonction:
+                          widget.supprRecommandationFonction,
+                      selectionnerDeroulantFonction:
+                          widget.selectionnerRecommandationFonction,
+                      addListeFonction: addRecommandation,
+                      supprListeFonction: supprRecommandation,
+                      apresAjoutez: 'une recommandation',
+                      txtFeminin: true,
                     ),
                   ),
                   Container(
@@ -599,6 +640,9 @@ class _FormModifFilmVuState extends State<FormModifFilmVu> {
                       accompagne: accompagneController,
                       personnes: personnes.isEmpty ? null : personnes,
                       cinemas: cinemas.isEmpty ? null : cinemas,
+                      recommandation: recommandations.isEmpty
+                          ? null
+                          : recommandations,
                     );
                   });
                   Navigator.pop(context);
