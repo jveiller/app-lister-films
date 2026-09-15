@@ -2,6 +2,7 @@ import 'package:culture_app1/commun/classes/class_films_vu.dart';
 import 'package:culture_app1/commun/classes/taille_adaptateur.dart';
 import 'package:culture_app1/commun/composant_txt.dart';
 import 'package:culture_app1/commun/couleur.dart';
+import 'package:culture_app1/commun/database/db_suggestions.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_date.dart';
 //import 'package:culture_app1/commun/elements/form/champs/champ_deroulant.dart';
 import 'package:culture_app1/commun/elements/form/champs/champ_duree.dart';
@@ -393,6 +394,7 @@ class _FormModifFilmVuState extends State<FormModifFilmVu> {
                       addListeFonction: addActeur,
                       supprListeFonction: supprActeur,
                       apresAjoutez: 'un·e acteur·ice',
+                      suggestionsFonction: DbSuggestions.getActeurs,
                     ),
                   ),
                   Container(
@@ -400,6 +402,7 @@ class _FormModifFilmVuState extends State<FormModifFilmVu> {
                     child: ChampTexte(
                       txt: 'Réalisateur/Réalisatrice',
                       champController: realisateurController,
+                      suggestionsFonction: DbSuggestions.getRealisateurs,
                     ),
                   ),
                   Container(

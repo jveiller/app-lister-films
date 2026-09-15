@@ -10,7 +10,9 @@ class ChampListe extends StatelessWidget {
   final Function supprListeFonction;
   final String apresAjoutez;
   final textController = TextEditingController();
+  final focusNode = FocusNode();
   final double largeurCarte;
+  final Future<List<String>> Function()? suggestionsFonction;
   ChampListe({
     super.key,
     required this.txt,
@@ -19,6 +21,7 @@ class ChampListe extends StatelessWidget {
     required this.supprListeFonction,
     required this.apresAjoutez,
     this.largeurCarte = 230,
+    this.suggestionsFonction,
   });
 
   @override
@@ -40,23 +43,104 @@ class ChampListe extends StatelessWidget {
                         texte: 'Ajoutez $apresAjoutez',
                         weight: FontWeight.bold,
                       ),
-                      content: TextFormField(
-                        cursorColor: Colors.black,
-                        textCapitalization: TextCapitalization.sentences,
-                        decoration: InputDecoration(
-                          hintText: 'Entrez $apresAjoutez',
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: const OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.black,
-                              width: 2,
+                      content: suggestionsFonction == null
+                          ? TextFormField(
+                              cursorColor: Colors.black,
+                              textCapitalization: TextCapitalization.sentences,
+                              decoration: InputDecoration(
+                                hintText: 'Entrez $apresAjoutez',
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: const OutlineInputBorder(),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                              controller: textController,
+                            )
+                          : FutureBuilder<List<String>>(
+                              future: suggestionsFonction!(),
+                              builder: (context, snapshot) {
+                                final suggestions = snapshot.data ?? [];
+                                return RawAutocomplete<String>(
+                                  textEditingController: textController,
+                                  focusNode: focusNode,
+                                  onSelected: (String selection) {
+                                    textController.text = selection;
+                                  },
+                                  optionsBuilder: (TextEditingValue value) {
+                                    if (value.text.isEmpty) {
+                                      return const Iterable<String>.empty();
+                                    }
+                                    return suggestions.where(
+                                      (s) => s.toLowerCase().contains(
+                                        value.text.toLowerCase(),
+                                      ),
+                                    );
+                                  },
+                                  fieldViewBuilder:
+                                      (
+                                        context,
+                                        controller,
+                                        focusNode,
+                                        onFieldSubmitted,
+                                      ) {
+                                        return TextFormField(
+                                          controller: controller,
+                                          focusNode: focusNode,
+                                          cursorColor: Colors.black,
+                                          textCapitalization:
+                                              TextCapitalization.sentences,
+                                          decoration: InputDecoration(
+                                            hintText: 'Entrez $apresAjoutez',
+                                            fillColor: Colors.white,
+                                            filled: true,
+                                            border: const OutlineInputBorder(),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color: Colors.black,
+                                                width: 2,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                  optionsViewBuilder:
+                                      (context, onSelected, options) {
+                                        return Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Material(
+                                            elevation: 4,
+                                            child: ConstrainedBox(
+                                              constraints: BoxConstraints(
+                                                maxHeight: 200,
+                                                maxWidth: 260,
+                                              ),
+                                              child: ListView(
+                                                padding: EdgeInsets.zero,
+                                                shrinkWrap: true,
+                                                children: [
+                                                  for (String option
+                                                      in options)
+                                                    ListTile(
+                                                      title: ComposantTexte(
+                                                        texte: option,
+                                                      ),
+                                                      onTap: () =>
+                                                          onSelected(option),
+                                                    ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                );
+                              },
                             ),
-                          ),
-                        ),
-                        controller: textController,
-                      ),
                       actions: [
                         BoutonAnnuler(),
                         TextButton(
